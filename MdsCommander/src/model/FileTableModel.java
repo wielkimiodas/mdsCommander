@@ -12,8 +12,6 @@ public class FileTableModel extends AbstractTableModel {
 
 	String columnNames[] = { "Name", "Ext", "Size", "Date" };
 
-	// Object[][] data;
-
 	List<CmdFileRow> data = new ArrayList<CmdFileRow>();
 
 	@Override

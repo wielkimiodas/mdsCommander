@@ -96,10 +96,13 @@ public class GuiCreator {
 
 		FileTableModel fileTableModel = new FileTableModel();
 		fileTableModel.setData(path);
+
 		JTable fileTable = new JTable(fileTableModel);
 
 		fileTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		fileTable.setDefaultRenderer(Object.class, new FileTableRenderer());
+
+		fileTable.getTableHeader();
 
 		return fileTable;
 	}
