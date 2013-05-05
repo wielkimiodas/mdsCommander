@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 
 import model.FileTableModel;
 
@@ -41,9 +42,6 @@ public class GuiCreator {
 		final JPanel panel = new JPanel();
 		panel.setBackground(color);
 		panel.setSize(width, height);
-
-		// final JButton button = new JButton(text);
-		// button.setPreferredSize(new Dimension(width, height));
 		return panel;
 	}
 
@@ -73,17 +71,24 @@ public class GuiCreator {
 		JPanel rightSide = new JPanel(new BorderLayout());
 
 		JTable leftFileTable = createFileTable("D:\\");
-		leftSide.add(leftFileTable, BorderLayout.CENTER);
+		JScrollPane leftScroll = new JScrollPane(leftFileTable);
+		leftScroll.getViewport().setBackground(
+				UIManager.getColor("Table.background"));
+		leftSide.add(leftScroll, BorderLayout.CENTER);
 
 		JTable rightFileTable = createFileTable("C:\\");
-		rightSide.add(rightFileTable, BorderLayout.CENTER);
+
+		JScrollPane rightScroll = new JScrollPane(rightFileTable);
+		rightScroll.getViewport().setBackground(
+				UIManager.getColor("Table.background"));
+		rightSide.add(rightScroll, BorderLayout.CENTER);
 
 		Dimension minSize = new Dimension(0, 0);
 		leftSide.setMinimumSize(minSize);
 		rightSide.setMinimumSize(minSize);
 
 		final JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				new JScrollPane(leftSide), new JScrollPane(rightSide));
+				leftSide, rightSide);
 		splitter.setOneTouchExpandable(true);
 		// splitter.setDividerLocation(splitterPanel.getSize().width / 2);
 
@@ -102,7 +107,7 @@ public class GuiCreator {
 		fileTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		fileTable.setDefaultRenderer(Object.class, new FileTableRenderer());
 
-		fileTable.getTableHeader();
+		fileTable.getTableHeader().setReorderingAllowed(false);
 
 		return fileTable;
 	}
