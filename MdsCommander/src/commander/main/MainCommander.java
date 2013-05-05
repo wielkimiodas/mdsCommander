@@ -9,15 +9,14 @@ public class MainCommander {
 	/**
 	 * @param args
 	 */
-			
-	
+
 	public static void main(String[] args) {
-		final JFrame frame = new JFrame(MainCommander.class.getName());
+		final JFrame frame = new JFrame("Mds Commander");
 		frame.getContentPane().add(GuiCreator.createMainPanel());
 		frame.setJMenuBar(GuiCreator.createMainMenuBar());
-	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    frame.pack();
-	    frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
 	}
 
 }

@@ -1,9 +1,8 @@
 package model;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -15,12 +14,7 @@ public class FileTableModel extends AbstractTableModel {
 
 	// Object[][] data;
 
-	List<Object[]> data = new ArrayList<Object[]>();
-
-	// = { { "file1", "txt", new Integer(200), new Date() },
-	// { "abrakadabra", "jpg", new Integer(10000), new Date() },
-	// { "rumcajs", "exe", new Integer(5324500), new Date() },
-	// { "rumcajs", "exe", new Integer(5324500), new Date() } };
+	List<CmdFileRow> data = new ArrayList<CmdFileRow>();
 
 	@Override
 	public int getColumnCount() {
@@ -35,7 +29,23 @@ public class FileTableModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int row, int col) {
-		return data.get(row)[col];
+
+		Object value = new Object();
+		switch (col) {
+		case 0:
+			value = data.get(row).getName();
+			break;
+		case 1:
+			value = data.get(row).getExtension();
+			break;
+		case 2:
+			value = data.get(row).getFileSize();
+			break;
+		case 3:
+			value = data.get(row).getLastModified();
+			break;
+		}
+		return value;
 	}
 
 	@Override
@@ -50,52 +60,15 @@ public class FileTableModel extends AbstractTableModel {
 		File[] fileList = location.listFiles();
 
 		for (int i = 0; i < fileList.length; i++) {
-			Object[] fileListRow = new Object[4];
 			File currFile = fileList[i];
+			CmdFileRow fileRow = new CmdFileRow(currFile);
 
-			fileListRow[0] = getFileName(currFile);
-
-			fileListRow[1] = getExtension(currFile);
-
-			if (currFile.isFile()) {
-				fileListRow[2] = fileList[i].length();
-			} else {
-				fileListRow[2] = "<DIR>";
-			}
-
-			fileListRow[3] = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-					DateFormat.SHORT).format(
-					new Date(fileList[i].lastModified()));
-
-			this.data.add(i, fileListRow);
+			this.data.add(i, fileRow);
 		}
+
+		Collections.sort(this.data, CmdFileRow.getNameComparator());
 
 		fireTableDataChanged();
-	}
-
-	private String getFileName(File file) {
-		String name = file.getName();
-
-		if (file.isFile()) {
-			int i = name.lastIndexOf('.');
-			if (i > 0)
-				name = name.substring(0, i);
-		}
-
-		return name;
-	}
-
-	private String getExtension(File file) {
-		String ext = "";
-
-		if (file.isFile()) {
-			String name = file.getName();
-			int i = name.lastIndexOf('.');
-			if (i > 0)
-				ext = name.substring(i + 1);
-		}
-
-		return ext;
 	}
 
 	@Override
@@ -104,9 +77,9 @@ public class FileTableModel extends AbstractTableModel {
 		return columnNames[column];
 	}
 
-	@Override
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		data.get(rowIndex)[columnIndex] = aValue;
-	}
+	// @Override
+	// public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+	// data.get(rowIndex)[columnIndex] = aValue;
+	// }
 
 }
