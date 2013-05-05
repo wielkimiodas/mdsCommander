@@ -75,8 +75,8 @@ public class GuiCreator {
 		JPanel rightSide = new JPanel(new BorderLayout());
 
 		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.Y_AXIS));
-		JButton bt1 = new JButton("kocham");
-		JButton bt3 = new JButton("Basiule");
+		JButton bt1 = new JButton("taki");
+		JButton bt3 = new JButton("baton");
 
 		leftSide.add(bt1, BorderLayout.NORTH);
 		leftSide.add(bt3, BorderLayout.SOUTH);

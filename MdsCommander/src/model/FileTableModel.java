@@ -1,7 +1,9 @@
 package model;
 
 import java.io.File;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -48,16 +50,63 @@ public class FileTableModel extends AbstractTableModel {
 		File[] fileList = location.listFiles();
 
 		for (int i = 0; i < fileList.length; i++) {
-			this.data.add(i, fileList);
+			Object[] fileListRow = new Object[4];
+			File currFile = fileList[i];
+
+			fileListRow[0] = getFileName(currFile);
+
+			fileListRow[1] = getExtension(currFile);
+
+			if (currFile.isFile()) {
+				fileListRow[2] = fileList[i].length();
+			} else {
+				fileListRow[2] = "<DIR>";
+			}
+
+			fileListRow[3] = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+					DateFormat.SHORT).format(
+					new Date(fileList[i].lastModified()));
+
+			this.data.add(i, fileListRow);
 		}
 
 		fireTableDataChanged();
+	}
+
+	private String getFileName(File file) {
+		String name = file.getName();
+
+		if (file.isFile()) {
+			int i = name.lastIndexOf('.');
+			if (i > 0)
+				name = name.substring(0, i);
+		}
+
+		return name;
+	}
+
+	private String getExtension(File file) {
+		String ext = "";
+
+		if (file.isFile()) {
+			String name = file.getName();
+			int i = name.lastIndexOf('.');
+			if (i > 0)
+				ext = name.substring(i + 1);
+		}
+
+		return ext;
 	}
 
 	@Override
 	public String getColumnName(int column) {
 
 		return columnNames[column];
+	}
+
+	@Override
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		data.get(rowIndex)[columnIndex] = aValue;
 	}
 
 }
