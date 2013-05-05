@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -74,12 +72,8 @@ public class GuiCreator {
 		JPanel leftSide = new JPanel(new BorderLayout());
 		JPanel rightSide = new JPanel(new BorderLayout());
 
-		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.Y_AXIS));
-		JButton bt1 = new JButton("taki");
-		JButton bt3 = new JButton("baton");
-
-		leftSide.add(bt1, BorderLayout.NORTH);
-		leftSide.add(bt3, BorderLayout.SOUTH);
+		JTable leftFileTable = createFileTable("D:\\");
+		leftSide.add(leftFileTable, BorderLayout.CENTER);
 
 		JTable rightFileTable = createFileTable("C:\\");
 		rightSide.add(rightFileTable, BorderLayout.CENTER);
