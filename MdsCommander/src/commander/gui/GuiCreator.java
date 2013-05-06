@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -18,6 +20,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 
+import model.CmdFileRow;
 import model.FileTableModel;
 
 public class GuiCreator {
@@ -99,15 +102,42 @@ public class GuiCreator {
 
 	public static JTable createFileTable(String path) {
 
-		FileTableModel fileTableModel = new FileTableModel();
+		final FileTableModel fileTableModel = new FileTableModel();
 		fileTableModel.setData(path);
 
-		JTable fileTable = new JTable(fileTableModel);
+		final JTable fileTable = new JTable(fileTableModel);
 
 		fileTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		fileTable.setDefaultRenderer(Object.class, new FileTableRenderer());
 
 		fileTable.getTableHeader().setReorderingAllowed(false);
+
+		fileTable.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (e.getKeyChar() == '\n') {
+					int selectedRow = fileTable.getSelectedRow() - 1;
+					CmdFileRow row = fileTableModel.getRowAt(selectedRow);
+					String newPath = row.getLocation();
+					fileTableModel.setData(newPath);
+					fileTableModel.fireTableDataChanged();
+				}
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 
 		return fileTable;
 	}

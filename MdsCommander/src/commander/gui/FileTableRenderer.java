@@ -1,8 +1,13 @@
 package commander.gui;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.io.File;
 
+import javax.swing.Icon;
+import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
 
 @SuppressWarnings("serial")
@@ -15,27 +20,18 @@ public class FileTableRenderer extends DefaultTableCellRenderer {
 		Component editor = super.getTableCellRendererComponent(table, value,
 				isSelected, hasFocus, row, column);
 
-		// editor.setBackground((row % 2) == 0 ? Color.white : Color.lightGray);
+		JLabel editorLabeled = (JLabel) editor;
 
-		// if (column == 2) {
-		// table.getModel().setValueAt(
-		// processFileLength((long) table.getModel().getValueAt(row,
-		// column)), row, column);
-		//
-		// }
+		if (column == 0) {
+			FileSystemView view = FileSystemView.getFileSystemView();
+			Icon icon = view.getSystemIcon(new File("C:\\Users"));
+			editorLabeled.setIcon(icon);
+		} else {
+			editorLabeled.setIcon(null);
+		}
 		setOpaque(true);
 
-		return editor;
+		return editorLabeled;
 	}
 
-	private String processFileLength(long length) {
-		String sLen = Long.toString(length);
-
-		for (int i = sLen.length() % 3; i < sLen.length(); i = i + 3) {
-			sLen = sLen.substring(0, i) + " "
-					+ sLen.substring(i, sLen.length());
-		}
-
-		return sLen;
-	}
 }

@@ -52,10 +52,18 @@ public class FileTableModel extends AbstractTableModel {
 	}
 
 	public void setData(String path) {
+		this.data.clear();
 
 		File location = new File(path);
-
 		File[] fileList = location.listFiles();
+
+		if (path.length() > 3) {
+			CmdFileRow first = new CmdFileRow(location, true);
+			this.data.add(first);
+		}
+		// if (first != null) {
+		// this.data.add(first);
+		// }
 
 		for (int i = 0; i < fileList.length; i++) {
 			File currFile = fileList[i];
@@ -75,6 +83,10 @@ public class FileTableModel extends AbstractTableModel {
 		return columnNames[column];
 	}
 
+	public CmdFileRow getRowAt(int row) {
+		CmdFileRow c = this.data.get(row);
+		return c;
+	}
 	// @Override
 	// public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 	// data.get(rowIndex)[columnIndex] = aValue;

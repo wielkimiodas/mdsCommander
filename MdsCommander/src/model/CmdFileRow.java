@@ -13,12 +13,28 @@ public class CmdFileRow {
 	private Date lastModified;
 	private String extension;
 	private Boolean isFolder;
+	private String location;
 
 	public CmdFileRow(File file) {
 		this.isFolder = file.isDirectory();
+		this.location = file.getPath();
 		setFileNameAndExt(file);
 		setFileSize(file);
 		setLastModified(file);
+	}
+
+	public CmdFileRow(File file, Boolean isBaseRow) {
+		this(file);
+
+		if (isBaseRow) {
+			String path = file.getPath();
+			int lastSlash = path.lastIndexOf('\\');
+			if (lastSlash != -1) {
+				String basePath = path.substring(0, lastSlash + 1);
+				this.name = "[..]";
+				this.location = basePath;
+			}
+		}
 	}
 
 	public String getName() {
@@ -27,6 +43,10 @@ public class CmdFileRow {
 
 	public String getFileSize() {
 		return fileSize;
+	}
+
+	public String getLocation() {
+		return location;
 	}
 
 	public Date getLastModified() {
@@ -102,5 +122,4 @@ public class CmdFileRow {
 		// DateFormat.SHORT).format(
 		// new Date(fileList[i].lastModified()));
 	}
-
 }
