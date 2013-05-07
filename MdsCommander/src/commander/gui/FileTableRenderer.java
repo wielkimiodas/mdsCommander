@@ -10,6 +10,8 @@ import javax.swing.JTable;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import model.CmdFileRow;
+
 @SuppressWarnings("serial")
 public class FileTableRenderer extends DefaultTableCellRenderer {
 
@@ -24,8 +26,11 @@ public class FileTableRenderer extends DefaultTableCellRenderer {
 
 		if (column == 0) {
 			FileSystemView view = FileSystemView.getFileSystemView();
-			Icon icon = view.getSystemIcon(new File("C:\\Users"));
+			CmdFileRow cmdRow = (CmdFileRow) value;
+			File f = new File(cmdRow.getLocation());
+			Icon icon = view.getSystemIcon(f);
 			editorLabeled.setIcon(icon);
+			value = view.getSystemDisplayName(f);
 		} else {
 			editorLabeled.setIcon(null);
 		}
@@ -33,5 +38,4 @@ public class FileTableRenderer extends DefaultTableCellRenderer {
 
 		return editorLabeled;
 	}
-
 }
