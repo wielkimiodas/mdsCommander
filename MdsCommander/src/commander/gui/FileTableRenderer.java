@@ -26,14 +26,19 @@ public class FileTableRenderer extends DefaultTableCellRenderer {
 
 		if (column == 0) {
 			FileSystemView view = FileSystemView.getFileSystemView();
-			CmdFileRow cmdRow = (CmdFileRow) value;
-			File f = new File(cmdRow.getLocation());
+			File f = new File(value.toString());
+			// CmdFileRow cmdRow = new CmdFileRow(value.toString());
+			// File f = new File(cmdRow.getLocation());
 			Icon icon = view.getSystemIcon(f);
 			editorLabeled.setIcon(icon);
 			value = view.getSystemDisplayName(f);
+			System.out.println(view.getSystemDisplayName(f));
+			table.getModel().setValueAt("ads", row, column);
+
 		} else {
 			editorLabeled.setIcon(null);
 		}
+
 		setOpaque(true);
 
 		return editorLabeled;

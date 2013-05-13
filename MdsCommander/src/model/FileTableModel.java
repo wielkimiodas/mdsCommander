@@ -31,7 +31,7 @@ public class FileTableModel extends AbstractTableModel {
 		Object value = new Object();
 		switch (col) {
 		case 0:
-			value = data.get(row).getName();
+			value = data.get(row).getLocation();
 			break;
 		case 1:
 			value = data.get(row).getExtension();
@@ -65,14 +65,18 @@ public class FileTableModel extends AbstractTableModel {
 		// this.data.add(first);
 		// }
 
-		for (int i = 0; i < fileList.length; i++) {
-			File currFile = fileList[i];
-			CmdFileRow fileRow = new CmdFileRow(currFile);
+		if (fileList == null) {
 
-			this.data.add(i, fileRow);
+		} else {
+			for (int i = 0; i < fileList.length; i++) {
+				File currFile = fileList[i];
+				CmdFileRow fileRow = new CmdFileRow(currFile);
+
+				this.data.add(i, fileRow);
+			}
+
+			Collections.sort(this.data, CmdFileRow.getNameComparator());
 		}
-
-		Collections.sort(this.data, CmdFileRow.getNameComparator());
 
 		fireTableDataChanged();
 	}
