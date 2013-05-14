@@ -31,9 +31,7 @@ public class FileTableRenderer extends DefaultTableCellRenderer {
 			// File f = new File(cmdRow.getLocation());
 			Icon icon = view.getSystemIcon(f);
 			editorLabeled.setIcon(icon);
-			value = view.getSystemDisplayName(f);
-			System.out.println(view.getSystemDisplayName(f));
-			table.getModel().setValueAt("ads", row, column);
+			editorLabeled.setText(view.getSystemDisplayName(f));
 
 		} else {
 			editorLabeled.setIcon(null);
