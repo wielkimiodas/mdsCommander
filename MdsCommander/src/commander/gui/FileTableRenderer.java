@@ -2,6 +2,7 @@ package commander.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.DisplayMode;
 import java.io.File;
 
 import javax.swing.Icon;
@@ -27,11 +28,15 @@ public class FileTableRenderer extends DefaultTableCellRenderer {
 		if (column == 0) {
 			FileSystemView view = FileSystemView.getFileSystemView();
 			File f = new File(value.toString());
-			// CmdFileRow cmdRow = new CmdFileRow(value.toString());
-			// File f = new File(cmdRow.getLocation());
+			String aPath = f.getAbsolutePath();
 			Icon icon = view.getSystemIcon(f);
 			editorLabeled.setIcon(icon);
-			editorLabeled.setText(view.getSystemDisplayName(f));
+			String displayedName = view.getSystemDisplayName(f);
+			if (row == 0 && (aPath.length() == 3)) {
+				displayedName = "..";
+			}
+
+			editorLabeled.setText("[" + displayedName + "]");
 
 		} else {
 			editorLabeled.setIcon(null);

@@ -31,23 +31,29 @@ import model.FileTableModel;
 
 public class GuiCreator {
 
-	public static JComponent createMainPanel() {
+	public static String leftSidePath = "C:\\";
+	public static String rightSidePath = "C:\\";
+
+	private JTable fileTable;
+	private FileTableModel fileTableModel;
+
+	public JComponent createMainPanel() {
 		final JPanel mainPanel = new JPanel();
 
 		final JPanel splitterPanel = createSplitPanel();
 
 		mainPanel.setLayout(new BorderLayout());
 
-		mainPanel.add(createPanel(Color.red, 150, 150), BorderLayout.SOUTH);
+		mainPanel.add(createTestPanel(Color.red, 150, 150), BorderLayout.SOUTH);
 
 		mainPanel.add(splitterPanel, BorderLayout.CENTER);
 
-		mainPanel.add(createPanel(Color.blue, 50, 150), BorderLayout.NORTH);
+		mainPanel.add(createTestPanel(Color.blue, 50, 150), BorderLayout.NORTH);
 
 		return mainPanel;
 	}
 
-	private static JPanel createPanel(Color color, int width, int height) {
+	private static JPanel createTestPanel(Color color, int width, int height) {
 		final JPanel panel = new JPanel();
 		panel.setBackground(color);
 		panel.setSize(width, height);
@@ -73,19 +79,19 @@ public class GuiCreator {
 		return menuBar;
 	}
 
-	public static JPanel createSplitPanel() {
+	public JPanel createSplitPanel() {
 
 		JPanel splitterPanel = new JPanel();
 		JPanel leftSide = new JPanel(new BorderLayout());
 		JPanel rightSide = new JPanel(new BorderLayout());
 
-		JTable leftFileTable = createFileTable("D:\\");
+		JTable leftFileTable = createFileTable(leftSidePath);
 		JScrollPane leftScroll = new JScrollPane(leftFileTable);
 		leftScroll.getViewport().setBackground(
 				UIManager.getColor("Table.background"));
 		leftSide.add(leftScroll, BorderLayout.CENTER);
 
-		JTable rightFileTable = createFileTable("C:\\");
+		JTable rightFileTable = createFileTable(rightSidePath);
 
 		JScrollPane rightScroll = new JScrollPane(rightFileTable);
 		rightScroll.getViewport().setBackground(
@@ -107,86 +113,56 @@ public class GuiCreator {
 	}
 
 	@SuppressWarnings("serial")
-	public static JTable createFileTable(String path) {
+	public JTable createFileTable(String path) {
 
-		final FileTableModel fileTableModel = new FileTableModel();
+		// final FileTableModel
+		fileTableModel = new FileTableModel();
 		fileTableModel.setData(path);
 
-		final JTable fileTable = new JTable(fileTableModel);
+		// final JTable
+		fileTable = new JTable(fileTableModel);
 
 		fileTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		fileTable.setDefaultRenderer(Object.class, new FileTableRenderer());
 
 		fileTable.getTableHeader().setReorderingAllowed(false);
 
-		// fileTable.addKeyListener(new KeyListener() {
-		//
-		// @Override
-		// public void keyTyped(KeyEvent e) {
-		// if (e.getKeyChar() == '\n') {
-		// int selectedRow = fileTable.getSelectedRow();
-		// CmdFileRow row = fileTableModel.getRowAt(selectedRow);
-		// String newPath = row.getLocation();
-		// fileTableModel.setData(newPath);
-		// fileTableModel.fireTableDataChanged();
-		// e.consume();
-		// }
-		//
-		// if (e.getKeyChar() == '\t') {
-		// int selectedRow = fileTable.getSelectedRow();
-		// System.out.println(selectedRow
-		// + fileTableModel.getRowAt(selectedRow).getName());
-		// e.consume();
-		// }
-		//
-		// }
-		//
-		// @Override
-		// public void keyReleased(KeyEvent e) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		//
-		// @Override
-		// public void keyPressed(KeyEvent e) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		// });
-
-		// fileTable
-		// .getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-		// im.remove(KeyStroke.getKeyStroke(Character.valueOf('\t')));
-
-		fileTable.getActionMap().put("mds", new AbstractAction() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-
-				int selectedRow = fileTable.getSelectedRow();
-				CmdFileRow row = fileTableModel.getRowAt(selectedRow);
-				String newPath = row.getLocation();
-				if (row.getIsFolder()) {
-					fileTableModel.setData(newPath);
-					fileTableModel.fireTableDataChanged();
-				} else {
-					Desktop d = Desktop.getDesktop();
-					try {
-						d.open(new File(row.getLocation()));
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-				}
-			}
-		});
+		fileTable.getActionMap().put("enterPressed", enterPressed);
 
 		fileTable.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "mds");
-
-		// im.put(KeyStroke.getKeyStroke(Character.valueOf('\t')), "mds");
+				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterPressed");
 
 		return fileTable;
 	}
+
+	private AbstractAction enterPressed = new AbstractAction() {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			int selectedRow = fileTable.getSelectedRow();
+			CmdFileRow row = fileTableModel.getRowAt(selectedRow);
+			String newPath = row.getLocation();
+			if (row.getIsFolder()) {
+				fileTableModel.setData(newPath);
+				fileTableModel.fireTableDataChanged();
+			} else {
+				Desktop d = Desktop.getDesktop();
+				try {
+					d.open(new File(row.getLocation()));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	};
+
+	private AbstractAction tabPressed = new AbstractAction() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+	};
 }

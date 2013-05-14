@@ -12,7 +12,8 @@ public class MainCommander {
 
 	public static void main(String[] args) {
 		final JFrame frame = new JFrame("Mds Commander");
-		frame.getContentPane().add(GuiCreator.createMainPanel());
+		GuiCreator gc = new GuiCreator();
+		frame.getContentPane().add(gc.createMainPanel());
 		frame.setJMenuBar(GuiCreator.createMainMenuBar());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
