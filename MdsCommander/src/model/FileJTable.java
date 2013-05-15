@@ -61,6 +61,9 @@ public class FileJTable extends JTable {
 		currentPath = path;
 		fileTableModel.setData(currentPath);
 		fileTableModel.fireTableDataChanged();
+		if (selected)
+			setSelected();
+
 	}
 
 	public String getCurrentPath() {
@@ -95,18 +98,5 @@ public class FileJTable extends JTable {
 			}
 		}
 	};
-
-	// private AbstractAction tabPressed = new AbstractAction() {
-	//
-	// @Override
-	// public void actionPerformed(ActionEvent e) {
-	// if (selected) {
-	// setDeselected();
-	// } else {
-	// setSelected();
-	// }
-	//
-	// }
-	// };
 
 }

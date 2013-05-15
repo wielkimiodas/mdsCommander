@@ -118,6 +118,8 @@ public class GuiCreator {
 		splitterPanel.setLayout(new BorderLayout());
 		splitterPanel.add(splitter, BorderLayout.CENTER);
 
+		rightFileTable.setSelected();
+
 		rightFileTable.getActionMap().put("tabPressed", tabPressed);
 		leftFileTable.getActionMap().put("tabPressed", tabPressed);
 
