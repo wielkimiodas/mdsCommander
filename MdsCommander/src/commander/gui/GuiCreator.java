@@ -15,6 +15,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -27,15 +28,16 @@ import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 
 import model.CmdFileRow;
+import model.FileJTable;
 import model.FileTableModel;
 
 public class GuiCreator {
 
-	public static String leftSidePath = "C:\\";
-	public static String rightSidePath = "C:\\";
+	public static String leftSideInitialPath = "C:\\";
+	public static String rightSideInitialPath = "C:\\";
 
-	private JTable fileTable;
-	private FileTableModel fileTableModel;
+	private FileJTable leftFileTable;
+	private FileJTable rightFileTable;
 
 	public JComponent createMainPanel() {
 		final JPanel mainPanel = new JPanel();
@@ -85,13 +87,19 @@ public class GuiCreator {
 		JPanel leftSide = new JPanel(new BorderLayout());
 		JPanel rightSide = new JPanel(new BorderLayout());
 
-		JTable leftFileTable = createFileTable(leftSidePath);
+		leftFileTable = new FileJTable(new FileTableModel(),
+				leftSideInitialPath);
 		JScrollPane leftScroll = new JScrollPane(leftFileTable);
 		leftScroll.getViewport().setBackground(
 				UIManager.getColor("Table.background"));
 		leftSide.add(leftScroll, BorderLayout.CENTER);
 
-		JTable rightFileTable = createFileTable(rightSidePath);
+		rightFileTable = new FileJTable(new FileTableModel(),
+				rightSideInitialPath);
+
+		JLabel leftLabel = createPathLabel(leftFileTable.getCurrentPath());
+
+		leftSide.add(leftLabel, BorderLayout.NORTH);
 
 		JScrollPane rightScroll = new JScrollPane(rightFileTable);
 		rightScroll.getViewport().setBackground(
@@ -109,60 +117,42 @@ public class GuiCreator {
 
 		splitterPanel.setLayout(new BorderLayout());
 		splitterPanel.add(splitter, BorderLayout.CENTER);
+
+		rightFileTable.getActionMap().put("tabPressed", tabPressed);
+		leftFileTable.getActionMap().put("tabPressed", tabPressed);
+
+		rightFileTable.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tabPressed");
+
+		leftFileTable.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tabPressed");
+
 		return splitterPanel;
 	}
 
-	@SuppressWarnings("serial")
-	public JTable createFileTable(String path) {
-
-		// final FileTableModel
-		fileTableModel = new FileTableModel();
-		fileTableModel.setData(path);
-
-		// final JTable
-		fileTable = new JTable(fileTableModel);
-
-		fileTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		fileTable.setDefaultRenderer(Object.class, new FileTableRenderer());
-
-		fileTable.getTableHeader().setReorderingAllowed(false);
-
-		fileTable.getActionMap().put("enterPressed", enterPressed);
-
-		fileTable.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterPressed");
-
-		return fileTable;
+	private JLabel createPathLabel(String path) {
+		return new JLabel(path);
 	}
 
-	private AbstractAction enterPressed = new AbstractAction() {
+	@SuppressWarnings("serial")
+	private FileJTable createFileTable(String path) {
 
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			int selectedRow = fileTable.getSelectedRow();
-			CmdFileRow row = fileTableModel.getRowAt(selectedRow);
-			String newPath = row.getLocation();
-			if (row.getIsFolder()) {
-				fileTableModel.setData(newPath);
-				fileTableModel.fireTableDataChanged();
-			} else {
-				Desktop d = Desktop.getDesktop();
-				try {
-					d.open(new File(row.getLocation()));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	};
+		return null;
+	}
 
 	private AbstractAction tabPressed = new AbstractAction() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
+			if (leftFileTable.isSelected()) {
+				leftFileTable.setDeselected();
+				rightFileTable.setSelected();
+			} else {
+				leftFileTable.setSelected();
+				rightFileTable.setDeselected();
+			}
 
 		}
 	};
+
 }

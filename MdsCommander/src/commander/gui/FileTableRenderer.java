@@ -26,15 +26,21 @@ public class FileTableRenderer extends DefaultTableCellRenderer {
 		JLabel editorLabeled = (JLabel) editor;
 
 		if (column == 0) {
+			// boolean fst = false;
 			FileSystemView view = FileSystemView.getFileSystemView();
-			File f = new File(value.toString());
+			String location = value.toString();
+			// System.out.println(location.substring(location.length() - 1));
+			// if (location.substring(location.length() - 1).equals("#")) {
+
+			File f = new File(location);
 			String aPath = f.getAbsolutePath();
 			Icon icon = view.getSystemIcon(f);
 			editorLabeled.setIcon(icon);
 			String displayedName = view.getSystemDisplayName(f);
-			if (row == 0 && (aPath.length() == 3)) {
-				displayedName = "..";
-			}
+
+			// if (fst) {
+			// displayedName = "..";
+			// }
 
 			editorLabeled.setText("[" + displayedName + "]");
 
