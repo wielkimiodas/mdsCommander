@@ -2,7 +2,9 @@ package model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -28,22 +30,22 @@ public class FileTableModel extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int row, int col) {
 
-		Object value = new Object();
-		switch (col) {
-		case 0:
-			value = data.get(row).getLocation();
-			break;
-		case 1:
-			value = data.get(row).getExtension();
-			break;
-		case 2:
-			value = data.get(row).getFileSize();
-			break;
-		case 3:
-			value = data.get(row).getLastModified();
-			break;
-		}
-		return value;
+		// Object value = new Object();
+		// switch (col) {
+		// case 0:
+		// value = data.get(row).getLocation();
+		// break;
+		// case 1:
+		// value = data.get(row).getExtension();
+		// break;
+		// case 2:
+		// value = data.get(row).getFileSize();
+		// break;
+		// case 3:
+		// value = data.get(row).getLastModified();
+		// break;
+		// }
+		return data.get(row);
 	}
 
 	@Override

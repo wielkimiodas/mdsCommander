@@ -31,12 +31,13 @@ public class FileJTable extends JTable {
 		getTableHeader().setReorderingAllowed(false);
 
 		getActionMap().put("enterPressed", enterPressed);
-		// getActionMap().put("tabPressed", tabPressed);
+		getActionMap().put("spacePressed", spacePressed);
 
 		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterPressed");
-		// getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-		// KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tabPressed");
+
+		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "spacePressed");
 
 		refresh(path);
 
@@ -82,7 +83,16 @@ public class FileJTable extends JTable {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			int selectedRow = getSelectedRow();
+
+			int selectedRow = 0;
+			try {
+				selectedRow = getSelectedRow();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				System.out.println("No file selected");
+				return;
+			}
+
 			CmdFileRow row = fileTableModel.getRowAt(selectedRow);
 			String newPath = row.getLocation();
 			if (row.getIsFolder()) {
@@ -96,6 +106,17 @@ public class FileJTable extends JTable {
 					e.printStackTrace();
 				}
 			}
+		}
+	};
+
+	private AbstractAction spacePressed = new AbstractAction() {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			int selectedRow = getSelectedRow();
+			CmdFileRow row = fileTableModel.getRowAt(selectedRow);
+			row.select();
+
 		}
 	};
 

@@ -4,10 +4,14 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.DisplayMode;
 import java.io.File;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.prefs.BackingStoreException;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -25,27 +29,44 @@ public class FileTableRenderer extends DefaultTableCellRenderer {
 
 		JLabel editorLabeled = (JLabel) editor;
 
-		if (column == 0) {
-			// boolean fst = false;
+		CmdFileRow currentFileRow = (CmdFileRow) value;
+
+		switch (column) {
+		case 0:
 			FileSystemView view = FileSystemView.getFileSystemView();
-			String location = value.toString();
-			// System.out.println(location.substring(location.length() - 1));
-			// if (location.substring(location.length() - 1).equals("#")) {
-
-			File f = new File(location);
-			String aPath = f.getAbsolutePath();
-			Icon icon = view.getSystemIcon(f);
+			Icon icon = view.getSystemIcon(currentFileRow.getBaseFile());
 			editorLabeled.setIcon(icon);
-			String displayedName = view.getSystemDisplayName(f);
-
-			// if (fst) {
-			// displayedName = "..";
-			// }
-
-			editorLabeled.setText("[" + displayedName + "]");
-
-		} else {
+			setValue(currentFileRow.getName());
+			setHorizontalAlignment(SwingConstants.LEFT);
+			break;
+		case 1:
+			setValue(currentFileRow.getExtension());
 			editorLabeled.setIcon(null);
+			setHorizontalAlignment(SwingConstants.LEFT);
+			break;
+		case 2:
+			Object v = currentFileRow.getFileSize();
+
+			if (v != "<DIR>")
+				setHorizontalAlignment(SwingConstants.RIGHT);
+			setValue(v);
+
+			setValue(currentFileRow.getFileSize());
+			editorLabeled.setIcon(null);
+			break;
+		case 3:
+
+			setValue(DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+					DateFormat.SHORT).format(currentFileRow.getLastModified()));
+			editorLabeled.setIcon(null);
+			setHorizontalAlignment(SwingConstants.LEFT);
+			break;
+		}
+
+		if (currentFileRow.isSelected()) {
+			editorLabeled.setForeground(Color.red);
+		} else {
+			editorLabeled.setForeground(Color.black);
 		}
 
 		setOpaque(true);

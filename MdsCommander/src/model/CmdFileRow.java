@@ -14,11 +14,14 @@ public class CmdFileRow {
 	private String extension;
 	private Boolean isFolder;
 	private String location;
+	private Boolean selected = false;
+	private File baseFile;
 
 	public CmdFileRow(File file) {
+		baseFile = file;
 		this.isFolder = file.isDirectory();
-		this.location = file.getPath();
-		setFileNameAndExt(file);
+		this.location = file.getAbsolutePath();
+		setFileNameAndExt();
 		setFileSize(file);
 		setLastModified(file);
 	}
@@ -35,6 +38,18 @@ public class CmdFileRow {
 				this.location = basePath;
 			}
 		}
+	}
+
+	public Boolean isSelected() {
+		return selected;
+	}
+
+	public File getBaseFile() {
+		return baseFile;
+	}
+
+	public void select() {
+		selected = !selected;
 	}
 
 	public String getName() {
@@ -70,6 +85,11 @@ public class CmdFileRow {
 				Boolean o1Folder = o1.isFolder;
 				Boolean o2Folder = o2.isFolder;
 
+				if (o1.name == "[..]")
+					return -1;
+				if (o2.name == "[..]")
+					return 1;
+
 				if (o1Folder && !o2Folder) {
 					value = -1;
 				}
@@ -79,7 +99,8 @@ public class CmdFileRow {
 				}
 
 				if (!(o1Folder ^ o2Folder)) {
-					value = o1.name.compareTo(o2.name);
+					value = o1.name.toLowerCase().compareTo(
+							o2.name.toLowerCase());
 				}
 				return value;
 			}
@@ -98,8 +119,8 @@ public class CmdFileRow {
 		}
 	}
 
-	private void setFileNameAndExt(File file) {
-		String name = file.getName();
+	private void setFileNameAndExt() {
+		String name = this.baseFile.getName();
 		String ext = "";
 
 		if (!this.isFolder) {
