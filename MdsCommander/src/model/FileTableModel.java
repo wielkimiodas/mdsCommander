@@ -76,8 +76,41 @@ public class FileTableModel extends AbstractTableModel {
 
 				this.data.add(i, fileRow);
 			}
+			Collections.sort(this.data, Comparators.getNameAscComparator());
+		}
 
-			Collections.sort(this.data, CmdFileRow.getNameComparator());
+		fireTableDataChanged();
+	}
+
+	public void sortData(Comparators.FileComparators cmp) {
+		if (cmp == null)
+			return;
+
+		switch (cmp) {
+		case NAME_ASC:
+			Collections.sort(this.data, Comparators.getNameAscComparator());
+			break;
+		case NAME_DESC:
+			Collections.sort(this.data, Comparators.getNameDescComparator());
+			break;
+		case DATE_ASC:
+			Collections.sort(this.data, Comparators.getDateAscComparator());
+			break;
+		case DATE_DESC:
+			Collections.sort(this.data, Comparators.getDateDescComparator());
+			break;
+		case SIZE_ASC:
+			Collections.sort(this.data, Comparators.getSizeAscComparator());
+			break;
+		case SIZE_DESC:
+			Collections.sort(this.data, Comparators.getSizeDescComparator());
+			break;
+		case EXT_ASC:
+			Collections.sort(this.data, Comparators.getExtAscComparator());
+			break;
+		case EXT_DESC:
+			Collections.sort(this.data, Comparators.getExtDescComparator());
+			break;
 		}
 
 		fireTableDataChanged();

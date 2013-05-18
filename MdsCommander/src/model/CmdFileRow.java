@@ -76,37 +76,7 @@ public class CmdFileRow {
 		return isFolder;
 	}
 
-	public static Comparator<CmdFileRow> getNameComparator() {
-		return new Comparator<CmdFileRow>() {
-
-			@Override
-			public int compare(CmdFileRow o1, CmdFileRow o2) {
-				int value = 0;
-				Boolean o1Folder = o1.isFolder;
-				Boolean o2Folder = o2.isFolder;
-
-				if (o1.name == "[..]")
-					return -1;
-				if (o2.name == "[..]")
-					return 1;
-
-				if (o1Folder && !o2Folder) {
-					value = -1;
-				}
-
-				if (!o1Folder && o2Folder) {
-					value = 1;
-				}
-
-				if (!(o1Folder ^ o2Folder)) {
-					value = o1.name.toLowerCase().compareTo(
-							o2.name.toLowerCase());
-				}
-				return value;
-			}
-
-		};
-	}
+	
 
 	private void setFileSize(File file) {
 		if (this.isFolder) {

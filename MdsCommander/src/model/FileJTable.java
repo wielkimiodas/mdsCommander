@@ -15,18 +15,21 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 
+import model.Comparators.FileComparators;
+
 import commander.gui.FileTableRenderer;
 
 @SuppressWarnings("serial")
 public class FileJTable extends JTable {
 
 	private String currentPath;
+	private Comparators.FileComparators currentSort = FileComparators.NAME_ASC;
 
 	private FileTableModel fileTableModel = new FileTableModel();
 
 	private Boolean selected = false;
 
-	public FileJTable(FileTableModel fileTableModel, String path) {
+	public FileJTable(final FileTableModel fileTableModel, String path) {
 		super(fileTableModel);
 		this.currentPath = path;
 		this.fileTableModel = fileTableModel;
@@ -44,28 +47,61 @@ public class FileJTable extends JTable {
 
 		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "spacePressed");
-		
-		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "leftArrowPressed");
-		
-		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "rightArrowPressed");
 
-		
+		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0),
+						"leftArrowPressed");
+
+		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0),
+				"rightArrowPressed");
+
 		getTableHeader().addMouseListener(new MouseAdapter() {
-		
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			int col = columnAtPoint(e.getPoint());
-			
-			
-			System.out.println("kliknales "+ col);
-		}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int col = columnAtPoint(e.getPoint());
+				Comparators.FileComparators newSort = null;
+				switch (col) {
+				case 0:
+					if (currentSort == FileComparators.NAME_ASC) {
+						newSort = FileComparators.NAME_DESC;
+					} else {
+						newSort = FileComparators.NAME_ASC;
+					}
+					break;
+				case 1:
+					if (currentSort == FileComparators.EXT_ASC) {
+						newSort = FileComparators.EXT_DESC;
+					} else {
+						newSort = FileComparators.EXT_ASC;
+					}
+					break;
+
+				case 2:
+					if (currentSort == FileComparators.SIZE_ASC) {
+						newSort = FileComparators.SIZE_DESC;
+					} else {
+						newSort = FileComparators.SIZE_ASC;
+					}
+					break;
+
+				case 3:
+					if (currentSort == FileComparators.DATE_ASC) {
+						newSort = FileComparators.DATE_DESC;
+					} else {
+						newSort = FileComparators.DATE_ASC;
+					}
+					break;
+
+				}
+
+				fileTableModel.sortData(newSort);
+				currentSort = newSort;
+			}
 		});
-		
-		
+
 		setRowSelectionAllowed(true);
-		
 		refresh(path);
 
 	}
@@ -130,9 +166,10 @@ public class FileJTable extends JTable {
 					d.open(new File(row.getLocation()));
 				} catch (IOException e) {
 					JOptionPane.showMessageDialog(null,
-						    "You cannot access this file","MdsCommander error message",
-						    JOptionPane.ERROR_MESSAGE);
-					
+							"You cannot access this file",
+							"MdsCommander error message",
+							JOptionPane.ERROR_MESSAGE);
+
 				}
 			}
 		}
@@ -146,26 +183,25 @@ public class FileJTable extends JTable {
 			CmdFileRow row = fileTableModel.getRowAt(selectedRow);
 			row.select();
 			fileTableModel.fireTableRowsUpdated(selectedRow, selectedRow);
-			
 
 		}
 	};
-	
+
 	private AbstractAction leftArrowPressed = new AbstractAction() {
-		
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			// TODO Auto-generated method stub
-			
+
 		}
 	};
-	
+
 	private AbstractAction rightArrowPressed = new AbstractAction() {
-		
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			// TODO Auto-generated method stub
-			
+
 		}
 	};
 
