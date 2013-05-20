@@ -2,47 +2,26 @@ package commander.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.beans.PropertyChangeSupport;
-import java.io.File;
-import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
-import javax.swing.InputMap;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
 
-import model.CmdFileRow;
 import model.FileJTable;
-import model.FileTableModel;
 
 public class GuiCreator {
 
-	public static String leftSideInitialPath = "C:\\";
-	public static String rightSideInitialPath = "C:\\";
-
-	public static PropertyChangeSupport labelChanged;
-
-	private FileJTable leftFileTable;
-	private FileJTable rightFileTable;
-	static JLabel leftLabel = new JLabel();
-	static JLabel rightLabel = new JLabel();
+	private CmdFileWindow leftSide;
+	private CmdFileWindow rightSide;
 
 	public JComponent createMainPanel() {
 		final JPanel mainPanel = new JPanel();
@@ -50,13 +29,9 @@ public class GuiCreator {
 		final JPanel splitterPanel = createSplitPanel();
 
 		mainPanel.setLayout(new BorderLayout());
-
 		mainPanel.add(createTestPanel(Color.red, 150, 150), BorderLayout.SOUTH);
-
 		mainPanel.add(splitterPanel, BorderLayout.CENTER);
-
 		mainPanel.add(createTestPanel(Color.blue, 50, 150), BorderLayout.NORTH);
-
 		return mainPanel;
 	}
 
@@ -82,67 +57,37 @@ public class GuiCreator {
 		menuBar.add(new JMenu("Edit"));
 		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(new JMenu("Help"));
-
 		return menuBar;
 	}
 
 	public JPanel createSplitPanel() {
 
 		JPanel splitterPanel = new JPanel();
-		JPanel leftSide = new JPanel(new BorderLayout());
-		JPanel rightSide = new JPanel(new BorderLayout());
-
-		leftFileTable = new FileJTable(this, new FileTableModel(),
-				leftSideInitialPath);
-		JScrollPane leftScroll = new JScrollPane(leftFileTable);
-		leftScroll.getViewport().setBackground(
-				UIManager.getColor("Table.background"));
-		leftSide.add(leftScroll, BorderLayout.CENTER);
-
-		rightFileTable = new FileJTable(this, new FileTableModel(),
-				rightSideInitialPath);
-
-		leftLabel = createPathLabel(leftFileTable.getCurrentPath());
-		rightLabel = createPathLabel(rightFileTable.getCurrentPath());
-
-		leftSide.add(leftLabel, BorderLayout.NORTH);
-		rightSide.add(rightLabel, BorderLayout.NORTH);
-
-		JScrollPane rightScroll = new JScrollPane(rightFileTable);
-		rightScroll.getViewport().setBackground(
-				UIManager.getColor("Table.background"));
-		rightSide.add(rightScroll, BorderLayout.CENTER);
-
-		Dimension minSize = new Dimension(0, 0);
-		leftSide.setMinimumSize(minSize);
-		rightSide.setMinimumSize(minSize);
+		leftSide = new CmdFileWindow();
+		rightSide = new CmdFileWindow();
 
 		final JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				leftSide, rightSide);
 		splitter.setOneTouchExpandable(true);
 		splitter.setResizeWeight(0.5);
 
-		// splitter.setDividerLocation(splitterPanel.getSize().width / 2);
-
 		splitterPanel.setLayout(new BorderLayout());
 		splitterPanel.add(splitter, BorderLayout.CENTER);
 
-		leftFileTable.setSelected();
+		leftSide.setSelected();
 
-		rightFileTable.getActionMap().put("tabPressed", tabPressed);
-		leftFileTable.getActionMap().put("tabPressed", tabPressed);
-
-		rightFileTable.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+		FileJTable leftJTable = leftSide.getFileJTable();
+		leftJTable.getActionMap().put("tabPressed", tabPressed);
+		leftJTable
+				.getInputMap(CmdFileWindow.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 				.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tabPressed");
-
-		leftFileTable.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-				.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tabPressed");
+		FileJTable rightJTable = rightSide.getFileJTable();
+		rightJTable.getActionMap().put("tabPressed", tabPressed);
+		rightJTable.getInputMap(
+				CmdFileWindow.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tabPressed");
 
 		return splitterPanel;
-	}
-
-	private JLabel createPathLabel(String path) {
-		return new JLabel(path);
 	}
 
 	@SuppressWarnings("serial")
@@ -150,20 +95,14 @@ public class GuiCreator {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (leftFileTable.isSelected()) {
-				leftFileTable.setDeselected();
-				rightFileTable.setSelected();
+			if (rightSide.isSelected()) {
+				rightSide.setDeselected();
+				leftSide.setSelected();
 			} else {
-				leftFileTable.setSelected();
-				rightFileTable.setDeselected();
+				rightSide.setSelected();
+				leftSide.setDeselected();
 			}
-
 		}
 	};
-
-	public void refreshLabels() {
-		leftLabel.setText(leftFileTable.getCurrentPath());
-		rightLabel.setText(rightFileTable.getCurrentPath());
-	}
 
 }
