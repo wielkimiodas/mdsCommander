@@ -120,6 +120,8 @@ public class GuiCreator {
 		final JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				leftSide, rightSide);
 		splitter.setOneTouchExpandable(true);
+		splitter.setResizeWeight(0.5);
+
 		// splitter.setDividerLocation(splitterPanel.getSize().width / 2);
 
 		splitterPanel.setLayout(new BorderLayout());
