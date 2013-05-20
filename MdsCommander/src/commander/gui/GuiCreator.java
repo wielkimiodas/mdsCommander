@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
 
@@ -36,8 +37,12 @@ public class GuiCreator {
 	public static String leftSideInitialPath = "C:\\";
 	public static String rightSideInitialPath = "C:\\";
 
+	public static PropertyChangeSupport labelChanged;
+
 	private FileJTable leftFileTable;
 	private FileJTable rightFileTable;
+	static JLabel leftLabel = new JLabel();
+	static JLabel rightLabel = new JLabel();
 
 	public JComponent createMainPanel() {
 		final JPanel mainPanel = new JPanel();
@@ -87,19 +92,21 @@ public class GuiCreator {
 		JPanel leftSide = new JPanel(new BorderLayout());
 		JPanel rightSide = new JPanel(new BorderLayout());
 
-		leftFileTable = new FileJTable(new FileTableModel(),
+		leftFileTable = new FileJTable(this, new FileTableModel(),
 				leftSideInitialPath);
 		JScrollPane leftScroll = new JScrollPane(leftFileTable);
 		leftScroll.getViewport().setBackground(
 				UIManager.getColor("Table.background"));
 		leftSide.add(leftScroll, BorderLayout.CENTER);
 
-		rightFileTable = new FileJTable(new FileTableModel(),
+		rightFileTable = new FileJTable(this, new FileTableModel(),
 				rightSideInitialPath);
 
-		JLabel leftLabel = createPathLabel(leftFileTable.getCurrentPath());
+		leftLabel = createPathLabel(leftFileTable.getCurrentPath());
+		rightLabel = createPathLabel(rightFileTable.getCurrentPath());
 
 		leftSide.add(leftLabel, BorderLayout.NORTH);
+		rightSide.add(rightLabel, BorderLayout.NORTH);
 
 		JScrollPane rightScroll = new JScrollPane(rightFileTable);
 		rightScroll.getViewport().setBackground(
@@ -137,11 +144,6 @@ public class GuiCreator {
 	}
 
 	@SuppressWarnings("serial")
-	private FileJTable createFileTable(String path) {
-
-		return null;
-	}
-
 	private AbstractAction tabPressed = new AbstractAction() {
 
 		@Override
@@ -156,5 +158,10 @@ public class GuiCreator {
 
 		}
 	};
+
+	public void refreshLabels() {
+		leftLabel.setText(leftFileTable.getCurrentPath());
+		rightLabel.setText(rightFileTable.getCurrentPath());
+	}
 
 }

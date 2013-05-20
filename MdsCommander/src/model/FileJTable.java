@@ -18,21 +18,24 @@ import javax.swing.ListSelectionModel;
 import model.Comparators.FileComparators;
 
 import commander.gui.FileTableRenderer;
+import commander.gui.GuiCreator;
 
 @SuppressWarnings("serial")
 public class FileJTable extends JTable {
 
-	private String currentPath;
+	private String currentPath = "test";
 	private Comparators.FileComparators currentSort = FileComparators.NAME_ASC;
 
 	private FileTableModel fileTableModel = new FileTableModel();
-
+	private GuiCreator guiCreator;
 	private Boolean selected = false;
 
-	public FileJTable(final FileTableModel fileTableModel, String path) {
+	public FileJTable(GuiCreator guiCreator,
+			final FileTableModel fileTableModel, String path) {
 		super(fileTableModel);
 		this.currentPath = path;
 		this.fileTableModel = fileTableModel;
+		this.guiCreator = guiCreator;
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setDefaultRenderer(Object.class, new FileTableRenderer());
 		getTableHeader().setReorderingAllowed(false);
@@ -160,6 +163,7 @@ public class FileJTable extends JTable {
 			String newPath = row.getLocation();
 			if (row.getIsFolder()) {
 				refresh(newPath);
+				guiCreator.refreshLabels();
 			} else {
 				Desktop d = Desktop.getDesktop();
 				try {
