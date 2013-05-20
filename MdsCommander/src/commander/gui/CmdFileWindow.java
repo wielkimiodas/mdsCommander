@@ -24,6 +24,10 @@ public class CmdFileWindow extends JPanel {
 
 	private JLabel pathLabel = new JLabel(initialPath);
 
+	public String getPathLabel() {
+		return pathLabel.getText();
+	}
+
 	public CmdFileWindow() {
 		this.setLayout(new BorderLayout());
 		fileJTable = new FileJTable(this, new FileTableModel(), initialPath);

@@ -13,7 +13,7 @@ import javax.swing.table.AbstractTableModel;
 public class FileTableModel extends AbstractTableModel {
 
 	String columnNames[] = { "Name", "Ext", "Size", "Date" };
-
+	private String currentPath;
 	List<CmdFileRow> data = new ArrayList<CmdFileRow>();
 
 	@Override
@@ -78,7 +78,7 @@ public class FileTableModel extends AbstractTableModel {
 			}
 			Collections.sort(this.data, Comparators.getNameAscComparator());
 		}
-
+		currentPath = path;
 		fireTableDataChanged();
 	}
 
@@ -125,6 +125,10 @@ public class FileTableModel extends AbstractTableModel {
 	public CmdFileRow getRowAt(int row) {
 		CmdFileRow c = this.data.get(row);
 		return c;
+	}
+
+	public void refreshData() {
+		setData(currentPath);
 	}
 	// @Override
 	// public void setValueAt(Object aValue, int rowIndex, int columnIndex) {

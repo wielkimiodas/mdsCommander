@@ -45,6 +45,7 @@ public class FileJTable extends JTable {
 		getActionMap().put("spacePressed", spacePressed);
 		getActionMap().put("leftArrowPressed", leftArrowPressed);
 		getActionMap().put("rightArrowPressed", rightArrowPressed);
+		getActionMap().put("f7Pressed", f7Pressed);
 
 		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterPressed");
@@ -59,6 +60,9 @@ public class FileJTable extends JTable {
 		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0),
 				"rightArrowPressed");
+
+		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0), "f7Pressed");
 
 		getTableHeader().addMouseListener(new MouseAdapter() {
 
@@ -202,6 +206,31 @@ public class FileJTable extends JTable {
 	};
 
 	private AbstractAction rightArrowPressed = new AbstractAction() {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+	};
+
+	private AbstractAction f7Pressed = new AbstractAction() {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			File f = new File(currentPath + "miodas");
+			if (f.isFile()) {
+				f.mkdir();
+				fileTableModel.refreshData();
+				System.out.println("nowy folder");
+			} else {
+				System.out.println("plik juz istnieje");
+			}
+
+		}
+	};
+
+	private AbstractAction delPressed = new AbstractAction() {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
