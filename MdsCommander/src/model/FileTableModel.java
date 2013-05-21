@@ -82,6 +82,10 @@ public class FileTableModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 
+	public List<CmdFileRow> getData() {
+		return data;
+	}
+
 	public void sortData(Comparators.FileComparators cmp) {
 		if (cmp == null)
 			return;

@@ -7,6 +7,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JInternalFrame;
@@ -17,6 +19,7 @@ import javax.swing.ListSelectionModel;
 
 import model.Comparators.FileComparators;
 
+import commander.controller.FileManager;
 import commander.gui.CmdFileWindow;
 import commander.gui.FileTableRenderer;
 import commander.gui.GuiCreator;
@@ -41,11 +44,12 @@ public class FileJTable extends JTable {
 		setDefaultRenderer(Object.class, new FileTableRenderer());
 		getTableHeader().setReorderingAllowed(false);
 
-		getActionMap().put("enterPressed", enterPressed);
-		getActionMap().put("spacePressed", spacePressed);
+		getActionMap().put("enterPressed", executeFileAction);
+		getActionMap().put("spacePressed", selectFileAction);
 		getActionMap().put("leftArrowPressed", leftArrowPressed);
 		getActionMap().put("rightArrowPressed", rightArrowPressed);
-		getActionMap().put("f7Pressed", f7Pressed);
+		getActionMap().put("f7Pressed", makeNewFolderAction);
+		getActionMap().put("delPressed", removeFileAction);
 
 		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterPressed");
@@ -63,6 +67,9 @@ public class FileJTable extends JTable {
 
 		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0), "f7Pressed");
+
+		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "delPressed");
 
 		getTableHeader().addMouseListener(new MouseAdapter() {
 
@@ -150,41 +157,56 @@ public class FileJTable extends JTable {
 		this.currentPath = currentPath;
 	}
 
-	private AbstractAction enterPressed = new AbstractAction() {
+	public List<File> getSelectedFiles() {
+		List<File> selectedFilesList = new ArrayList<File>();
+
+		for (CmdFileRow fileRow : fileTableModel.getData()) {
+			if (fileRow.isSelected()) {
+				selectedFilesList.add(fileRow.getBaseFile());
+			}
+		}
+		return selectedFilesList;
+	}
+
+	private CmdFileRow getJTableSelectedRow() {
+		int selectedRow = 0;
+		try {
+			selectedRow = getSelectedRow();
+		} catch (Exception e1) {
+
+			System.out.println("No file selected");
+			return null;
+		}
+		return fileTableModel.getRowAt(selectedRow);
+	}
+
+	private AbstractAction executeFileAction = new AbstractAction() {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+			CmdFileRow row = getJTableSelectedRow();
+			if (row != null) {
+				String newPath = row.getLocation();
+				if (row.getIsFolder()) {
+					refresh(newPath);
+					cmdFileWindow.refreshPathLabel();
+				} else {
+					Desktop d = Desktop.getDesktop();
+					try {
+						d.open(new File(row.getLocation()));
+					} catch (IOException e) {
+						JOptionPane.showMessageDialog(null,
+								"You cannot access this file",
+								"MdsCommander error message",
+								JOptionPane.ERROR_MESSAGE);
 
-			int selectedRow = 0;
-			try {
-				selectedRow = getSelectedRow();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				System.out.println("No file selected");
-				return;
-			}
-
-			CmdFileRow row = fileTableModel.getRowAt(selectedRow);
-			String newPath = row.getLocation();
-			if (row.getIsFolder()) {
-				refresh(newPath);
-				cmdFileWindow.refreshPathLabel();
-			} else {
-				Desktop d = Desktop.getDesktop();
-				try {
-					d.open(new File(row.getLocation()));
-				} catch (IOException e) {
-					JOptionPane.showMessageDialog(null,
-							"You cannot access this file",
-							"MdsCommander error message",
-							JOptionPane.ERROR_MESSAGE);
-
+					}
 				}
 			}
 		}
 	};
 
-	private AbstractAction spacePressed = new AbstractAction() {
+	private AbstractAction selectFileAction = new AbstractAction() {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -214,7 +236,7 @@ public class FileJTable extends JTable {
 		}
 	};
 
-	private AbstractAction f7Pressed = new AbstractAction() {
+	private AbstractAction makeNewFolderAction = new AbstractAction() {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -226,15 +248,32 @@ public class FileJTable extends JTable {
 			} else {
 				System.out.println("plik juz istnieje");
 			}
-
 		}
 	};
 
-	private AbstractAction delPressed = new AbstractAction() {
+	private AbstractAction removeFileAction = new AbstractAction() {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+			List<File> fileList = getSelectedFiles();
+			if (fileList.size() > 0)
+				if (fileList.get(0).getName() == "[..]") {
+					fileList.remove(0);
+				}
 
+			if (fileList.size() > 0) {
+				FileManager.removeFiles(fileList);
+			}
+
+			else {
+				CmdFileRow row = getJTableSelectedRow();
+				if (row.getName() != "[..]") {
+					List<File> localFileList = new ArrayList<File>();
+					localFileList.add(row.getBaseFile());
+					FileManager.removeFiles(localFileList);
+					fileTableModel.refreshData();
+				}
+			}
 		}
 	};
 
