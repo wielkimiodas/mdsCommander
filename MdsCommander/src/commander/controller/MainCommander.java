@@ -1,4 +1,4 @@
-package commander.main;
+package commander.controller;
 
 import javax.swing.JFrame;
 

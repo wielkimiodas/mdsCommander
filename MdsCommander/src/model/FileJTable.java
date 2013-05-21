@@ -218,11 +218,11 @@ public class FileJTable extends JTable {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			File f = new File(currentPath + "miodas");
-			if (f.isFile()) {
+			File f = new File(currentPath + "\\" + "miodas");
+			if (!f.exists()) {
 				f.mkdir();
 				fileTableModel.refreshData();
-				System.out.println("nowy folder");
+				System.out.println("nowy folder " + f.getAbsolutePath());
 			} else {
 				System.out.println("plik juz istnieje");
 			}
@@ -234,7 +234,6 @@ public class FileJTable extends JTable {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// TODO Auto-generated method stub
 
 		}
 	};
