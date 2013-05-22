@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.print.attribute.standard.MediaSize.Other;
 import javax.swing.table.AbstractTableModel;
 
 @SuppressWarnings("serial")
@@ -14,11 +15,11 @@ public class FileTableModel extends AbstractTableModel {
 
 	String columnNames[] = { "Name", "Ext", "Size", "Date" };
 	private String currentPath;
+
 	List<CmdFileRow> data = new ArrayList<CmdFileRow>();
 
 	@Override
 	public int getColumnCount() {
-
 		return columnNames.length;
 	}
 
