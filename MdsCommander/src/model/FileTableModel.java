@@ -18,6 +18,37 @@ public class FileTableModel extends AbstractTableModel {
 
 	List<CmdFileRow> data = new ArrayList<CmdFileRow>();
 
+	private long filesSize = 0;
+	private long selectedFilesSize = 0;
+	private int filesCount = 0;
+	private int selectedFilesCount = 0;
+	private int foldersCount = 0;
+	private int selectedFoldersCount = 0;
+
+	public int getFoldersCount() {
+		return foldersCount;
+	}
+
+	public int getSelectedFoldersCount() {
+		return selectedFoldersCount;
+	}
+
+	public long getFilesSize() {
+		return filesSize / 1024;
+	}
+
+	public long getSelectedFilesSize() {
+		return selectedFilesSize / 1024;
+	}
+
+	public int getFilesCount() {
+		return filesCount;
+	}
+
+	public int getSelectedFilesCount() {
+		return selectedFilesCount;
+	}
+
 	@Override
 	public int getColumnCount() {
 		return columnNames.length;
@@ -56,6 +87,10 @@ public class FileTableModel extends AbstractTableModel {
 
 	public void setData(String path) {
 		this.data.clear();
+		foldersCount = 0;
+		filesSize = 0;
+		foldersCount = 0;
+		filesCount = 0;
 
 		File location = new File(path);
 		File[] fileList = location.listFiles();
@@ -74,6 +109,13 @@ public class FileTableModel extends AbstractTableModel {
 			for (int i = 0; i < fileList.length; i++) {
 				File currFile = fileList[i];
 				CmdFileRow fileRow = new CmdFileRow(currFile);
+
+				if (fileRow.getIsFolder()) {
+					foldersCount++;
+				} else {
+					filesSize += fileRow.getBaseFile().length();
+					filesCount++;
+				}
 
 				this.data.add(i, fileRow);
 			}

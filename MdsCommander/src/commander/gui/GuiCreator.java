@@ -11,6 +11,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -24,6 +25,8 @@ import model.FileJTable;
 
 public class GuiCreator {
 
+	private JPanel southPart;
+	private JPanel northPart;
 	private CmdFileWindow leftSide;
 	private CmdFileWindow rightSide;
 
@@ -33,7 +36,7 @@ public class GuiCreator {
 		final JPanel splitterPanel = createSplitPanel();
 
 		mainPanel.setLayout(new BorderLayout());
-		mainPanel.add(createTestPanel(Color.red, 150, 150), BorderLayout.SOUTH);
+		mainPanel.add(createSouthPanel(), BorderLayout.SOUTH);
 		mainPanel.add(splitterPanel, BorderLayout.CENTER);
 		mainPanel.add(createTestPanel(Color.blue, 50, 150), BorderLayout.NORTH);
 		return mainPanel;
@@ -44,6 +47,17 @@ public class GuiCreator {
 		panel.setBackground(color);
 		panel.setSize(width, height);
 		return panel;
+	}
+
+	private JPanel createSouthPanel() {
+		JPanel southPanel = new JPanel();
+
+		JLabel path = new JLabel();
+		path.setText("mds");
+
+		southPanel.add(path);
+
+		return southPanel;
 	}
 
 	public static JMenuBar createMainMenuBar() {

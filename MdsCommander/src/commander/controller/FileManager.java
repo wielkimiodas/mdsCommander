@@ -1,7 +1,11 @@
 package commander.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
@@ -24,22 +28,13 @@ public class FileManager {
 
 	public static Boolean copyFiles(String destination, List<File> fileList) {
 
-		for (File file : fileList) {
-			Path srcPath = Paths.get(file.getAbsolutePath());
-			Path destPath = Paths.get(new File(destination).getAbsolutePath());
-			try {
-				// Files.walkFileTree(srcPath,
-				// EnumSet.of(FileVisitOption.FOLLOW_LINKS),Integer.MAX_VALUE,
-				// Files.copy(srcPath, destPath,
-				// StandardCopyOption.REPLACE_EXISTING));
-
-				Files.copy(srcPath, destPath,
-						StandardCopyOption.REPLACE_EXISTING);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return false;
+		try {
+			for (File file : fileList) {
+				copyFile(destination, file);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 		return true;
 	}
@@ -93,6 +88,44 @@ public class FileManager {
 			return f.delete();
 		}
 		return false;
+	}
+
+	@SuppressWarnings("unused")
+	private static Boolean copyFile(String dest, File src) {
+		InputStream inStream = null;
+		OutputStream outStream = null;
+		File afile;
+		File bfile;
+		try {
+
+			if (src.isDirectory())
+				for (File f : src.listFiles()) {
+					copyFile(dest, f);
+				}
+
+			afile = src;
+			bfile = new File(dest);
+
+			inStream = new FileInputStream(afile);
+			outStream = new FileOutputStream(bfile);
+
+			byte[] buffer = new byte[1024];
+
+			int length;
+			// copy the file content in bytes
+			while ((length = inStream.read(buffer)) > 0) {
+				outStream.write(buffer, 0, length);
+			}
+			inStream.close();
+			outStream.close();
+			System.out.println("File is copied successful!");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
 	}
 
 	public static Boolean moveFiles(String destPath, List<File> fileList) {

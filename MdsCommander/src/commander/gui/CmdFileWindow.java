@@ -23,6 +23,7 @@ public class CmdFileWindow extends JPanel {
 	}
 
 	private JLabel pathLabel = new JLabel(initialPath);
+	private JLabel summarizingDownLabel = new JLabel("tescior");
 
 	public String getPathLabel() {
 		return pathLabel.getText();
@@ -31,7 +32,7 @@ public class CmdFileWindow extends JPanel {
 	public CmdFileWindow() {
 		this.setLayout(new BorderLayout());
 		fileJTable = new FileJTable(this, new FileTableModel(), initialPath);
-
+		summarizingDownLabel.setText(fileJTable.getSummarizingDownLabel());
 		scroller = new JScrollPane(fileJTable);
 		scroller.getViewport().setBackground(
 				UIManager.getColor("Table.background"));
@@ -41,10 +42,12 @@ public class CmdFileWindow extends JPanel {
 
 		this.add(scroller, BorderLayout.CENTER);
 		this.add(pathLabel, BorderLayout.NORTH);
+		this.add(summarizingDownLabel, BorderLayout.SOUTH);
 	}
 
 	public void refreshPathLabel() {
 		pathLabel.setText(fileJTable.getCurrentPath());
+		summarizingDownLabel.setText(fileJTable.getSummarizingDownLabel());
 	}
 
 	public void setSelected() {

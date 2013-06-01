@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.Desktop;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
@@ -34,7 +36,13 @@ public class FileJTable extends JTable {
 		return currentSort;
 	}
 
-	private FileTableModel fileTableModel = new FileTableModel();
+	private String summarizingDownLabel = "nie dzia³a";
+
+	public String getSummarizingDownLabel() {
+		return summarizingDownLabel;
+	}
+
+	private FileTableModel fileTableModel;// = new FileTableModel();
 	private CmdFileWindow cmdFileWindow;
 	private Boolean selected = false;
 
@@ -44,6 +52,7 @@ public class FileJTable extends JTable {
 		this.currentPath = path;
 		this.fileTableModel = fileTableModel;
 		this.cmdFileWindow = cmdFileWindow;
+		this.summarizingDownLabel = createDownLabelText();
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setDefaultRenderer(Object.class, new FileTableRenderer());
 		getTableHeader().setReorderingAllowed(false);
@@ -126,7 +135,22 @@ public class FileJTable extends JTable {
 
 		setRowSelectionAllowed(true);
 		refresh(path);
+	}
 
+	private String createDownLabelText() {
+		String result = "";
+
+		long fs = fileTableModel.getFilesSize();
+		long sfs = fileTableModel.getSelectedFilesSize();
+		int fic = fileTableModel.getFilesCount();
+		int sfic = fileTableModel.getSelectedFilesCount();
+		int foc = fileTableModel.getFoldersCount();
+		int sfoc = fileTableModel.getSelectedFoldersCount();
+
+		result = sfs + " k / " + fs + " k w " + sfic + " / " + fic
+				+ " plik(ach/ów). " + sfoc + " / " + foc + " kat.(ów)";
+
+		return result;
 	}
 
 	public void setSelected() {
@@ -147,7 +171,9 @@ public class FileJTable extends JTable {
 
 	public void refresh(String path) {
 		currentPath = path;
+
 		fileTableModel.setData(currentPath);
+		summarizingDownLabel = createDownLabelText();
 		fileTableModel.fireTableDataChanged();
 		if (selected)
 			setSelected();
@@ -293,7 +319,7 @@ public class FileJTable extends JTable {
 		public void actionPerformed(ActionEvent arg0) {
 			List<File> fileList = getReallySelectedFiles();
 			System.out.println("kopiujê" + fileList.get(0).getAbsolutePath());
-			FileManager.copyFiles("C:\\miodas", fileList);
+			FileManager.copyFiles("C:\\cmdtraining\\b", fileList);
 			fileTableModel.refreshData();
 		}
 	};
