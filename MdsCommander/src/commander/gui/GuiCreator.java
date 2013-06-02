@@ -2,14 +2,20 @@ package commander.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -17,6 +23,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 import commander.controller.FileManager;
@@ -29,6 +37,11 @@ public class GuiCreator {
 	private JPanel northPart;
 	private CmdFileWindow leftSide;
 	private CmdFileWindow rightSide;
+	private String downPath = "miods";
+
+	public void setDownPath(String downPath) {
+		this.downPath = downPath;
+	}
 
 	public JComponent createMainPanel() {
 		final JPanel mainPanel = new JPanel();
@@ -50,12 +63,36 @@ public class GuiCreator {
 	}
 
 	private JPanel createSouthPanel() {
-		JPanel southPanel = new JPanel();
+		List<String> shortcuts = Arrays.asList("F3 Podgl¹d", "F4 Edycja",
+				"F5 Kopiuj", "F6ZmPrzen", "F7 UtwKat", "F8 Usuñ",
+				"Alt+F4 Zakoñcz");
+		JPanel southPanel = new JPanel(new BorderLayout());
+		JPanel executionPanel = new JPanel();
 
 		JLabel path = new JLabel();
-		path.setText("mds");
+		path.setText(downPath);
 
-		southPanel.add(path);
+		JTextField textbox = new JTextField(40);
+
+		path.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		textbox.setAlignmentX(Component.RIGHT_ALIGNMENT);
+
+		executionPanel.add(path);
+		executionPanel.add(textbox);
+
+		GridLayout gl = new GridLayout(1, 6);
+		gl.setHgap(5);
+		gl.setVgap(5);
+
+		JPanel shortcutsPanel = new JPanel();
+		shortcutsPanel.setLayout(gl);
+
+		for (String shortcut : shortcuts) {
+			shortcutsPanel.add(new JLabel(shortcut));
+		}
+
+		southPanel.add(executionPanel, BorderLayout.NORTH);
+		southPanel.add(shortcutsPanel, BorderLayout.SOUTH);
 
 		return southPanel;
 	}
