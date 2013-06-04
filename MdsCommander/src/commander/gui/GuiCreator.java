@@ -171,6 +171,9 @@ public class GuiCreator implements CommanderDataListener {
 
 		leftSide = new CmdFileWindow(this);
 		rightSide = new CmdFileWindow(this);
+		leftSide.setOtherFileWindow(rightSide);
+		rightSide.setOtherFileWindow(leftSide);
+
 		leftSide.setSelected();
 		final JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				leftSide, rightSide);
@@ -191,6 +194,7 @@ public class GuiCreator implements CommanderDataListener {
 				CmdFileWindow.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tabPressed");
 
+		leftSide.requestFocus();
 		return splitterPanel;
 	}
 

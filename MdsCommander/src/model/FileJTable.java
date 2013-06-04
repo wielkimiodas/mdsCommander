@@ -3,6 +3,7 @@ package model;
 import java.awt.Desktop;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.print.attribute.standard.MediaSize.Other;
 import javax.swing.AbstractAction;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -325,7 +327,6 @@ public class FileJTable extends JTable {
 				FileManager.removeFiles(fileList);
 				fileTableModel.refreshData();
 			}
-
 		}
 	};
 
@@ -334,9 +335,14 @@ public class FileJTable extends JTable {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			List<File> fileList = getReallySelectedFiles();
-			System.out.println("kopiujê" + fileList.get(0).getAbsolutePath());
-			FileManager.copyFiles("C:\\cmdtraining\\b", fileList);
+			// System.out.println("kopiujê" +
+			// fileList.get(0).getAbsolutePath());
+			String destPath = cmdFileWindow.getOtherFileWindow()
+					.getFileJTable().currentPath;
+			FileManager.copyFiles(destPath, fileList);
 			fileTableModel.refreshData();
+			cmdFileWindow.getOtherFileWindow().getFileJTable().fileTableModel
+					.refreshData();
 		}
 	};
 

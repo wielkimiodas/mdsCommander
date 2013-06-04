@@ -104,7 +104,14 @@ public class FileManager {
 				}
 
 			afile = src;
-			bfile = new File(dest);
+			String srcPath = src.getAbsolutePath();
+			String destName = dest + "\\"
+					+ srcPath.substring(srcPath.lastIndexOf('\\'));
+
+			bfile = new File(destName);
+
+			System.out.println("kopiuje: " + afile.getAbsolutePath() + " do "
+					+ bfile.getAbsolutePath());
 
 			inStream = new FileInputStream(afile);
 			outStream = new FileOutputStream(bfile);

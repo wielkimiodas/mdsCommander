@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.nio.file.FileSystem;
 import java.text.DecimalFormat;
@@ -15,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
+import javax.swing.event.AncestorListener;
 import javax.swing.filechooser.FileSystemView;
 
 import model.FileJTable;
@@ -37,6 +40,15 @@ public class CmdFileWindow extends JPanel {
 	private JPanel northPanel = new JPanel(new BorderLayout());
 	private JLabel driveInfo = new JLabel("drive info here");
 	private GuiCreator parent;
+	private CmdFileWindow otherFileWindow;
+
+	public CmdFileWindow getOtherFileWindow() {
+		return otherFileWindow;
+	}
+
+	public void setOtherFileWindow(CmdFileWindow otherFileWindow) {
+		this.otherFileWindow = otherFileWindow;
+	}
 
 	public GuiCreator getMyParent() {
 		return parent;
@@ -50,6 +62,7 @@ public class CmdFileWindow extends JPanel {
 		this.parent = parent;
 		this.setLayout(new BorderLayout());
 		fileJTable = new FileJTable(this, new FileTableModel(), initialPath);
+		fileJTable.addMouseListener(mouseAdapter);
 		summarizingDownLabel.setText(fileJTable.getSummarizingDownLabel());
 		scroller = new JScrollPane(fileJTable);
 		scroller.getViewport().setBackground(
@@ -125,6 +138,13 @@ public class CmdFileWindow extends JPanel {
 
 			refreshDriveData();
 		}
+	};
+
+	MouseAdapter mouseAdapter = new MouseAdapter() {
+		public void mouseClicked(MouseEvent e) {
+			fileJTable.setSelected();
+			otherFileWindow.fileJTable.setDeselected();
+		};
 	};
 
 }
