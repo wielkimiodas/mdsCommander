@@ -223,7 +223,7 @@ public class FileJTable extends JTable {
 				String newPath = row.getLocation();
 				if (row.getIsFolder()) {
 					refresh(newPath);
-					cmdFileWindow.refreshPathLabel();
+					cmdFileWindow.refreshLabelAndSummary();
 				} else {
 					Desktop d = Desktop.getDesktop();
 					try {
