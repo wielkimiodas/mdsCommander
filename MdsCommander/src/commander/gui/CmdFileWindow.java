@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.FileSystem;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 import javax.swing.JComboBox;
@@ -12,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileSystemView;
 
 import model.FileJTable;
 import model.FileTableModel;
@@ -49,7 +53,8 @@ public class CmdFileWindow extends JPanel {
 
 		Dimension minSize = new Dimension(0, 0);
 		this.setMinimumSize(minSize);
-		JLabel m = new JLabel("mjodas");
+
+		refreshDriveData();
 		northPanel.add(pathLabel, BorderLayout.SOUTH);
 		northPanel.add(roots, BorderLayout.WEST);
 		northPanel.add(driveInfo, BorderLayout.CENTER);
@@ -57,6 +62,7 @@ public class CmdFileWindow extends JPanel {
 		this.add(scroller, BorderLayout.CENTER);
 		this.add(northPanel, BorderLayout.NORTH);
 		this.add(summarizingDownLabel, BorderLayout.SOUTH);
+
 	}
 
 	public void refreshLabelAndSummary() {
@@ -81,14 +87,37 @@ public class CmdFileWindow extends JPanel {
 		roots.addActionListener(cbListener);
 	}
 
+	private void refreshDriveData() {
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		symbols.setGroupingSeparator(' ');
+		DecimalFormat df = new DecimalFormat("###,###", symbols);
+
+		File drive = new File(fileJTable.getCurrentPath().substring(0, 3));
+		String freeSpace = df.format(drive.getFreeSpace() / 1024);
+		String totalSpace = df.format(drive.getTotalSpace() / 1024);
+		String driveDisplayName = FileSystemView.getFileSystemView()
+				.getSystemDisplayName(drive);
+		String driveLabel;
+		if (!driveDisplayName.equals("")) {
+			driveLabel = driveDisplayName.substring(0,
+					driveDisplayName.lastIndexOf(' ')).toLowerCase();
+		} else
+			driveLabel = "none";
+		driveInfo.setText("[" + driveLabel + "]" + " " + freeSpace + " k z "
+				+ totalSpace + " k wolne");
+	}
+
 	ActionListener cbListener = new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JComboBox cb = (JComboBox) e.getSource();
-			String drive = ((File) cb.getSelectedItem()).getAbsolutePath();
+			File selectedDrive = (File) cb.getSelectedItem();
+			String drive = selectedDrive.getAbsolutePath();
 			fileJTable.refresh(drive);
 			refreshLabelAndSummary();
+
+			refreshDriveData();
 		}
 	};
 
