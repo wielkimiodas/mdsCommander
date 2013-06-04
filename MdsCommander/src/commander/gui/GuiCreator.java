@@ -3,7 +3,10 @@ package commander.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -11,9 +14,13 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -51,14 +58,23 @@ public class GuiCreator {
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(createSouthPanel(), BorderLayout.SOUTH);
 		mainPanel.add(splitterPanel, BorderLayout.CENTER);
-		mainPanel.add(createTestPanel(Color.blue, 50, 150), BorderLayout.NORTH);
+		mainPanel.add(createNorthPanel(), BorderLayout.NORTH);
 		return mainPanel;
 	}
 
-	private static JPanel createTestPanel(Color color, int width, int height) {
+	private static JPanel createNorthPanel() {
 		final JPanel panel = new JPanel();
-		panel.setBackground(color);
-		panel.setSize(width, height);
+
+		JButton imgBtn = new JButton();
+		// java.net.URL imgURL = getClass().getResource(path);
+		ImageIcon test = new ImageIcon("res/refresh.png");
+
+		imgBtn.setIcon(test);
+		imgBtn.setPreferredSize(new Dimension(16, 16));
+		imgBtn.setBorder(BorderFactory.createEmptyBorder());
+		imgBtn.setContentAreaFilled(false);
+		panel.add(imgBtn);
+
 		return panel;
 	}
 
