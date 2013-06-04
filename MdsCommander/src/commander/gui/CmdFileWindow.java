@@ -36,12 +36,18 @@ public class CmdFileWindow extends JPanel {
 	private JLabel summarizingDownLabel = new JLabel("tescior");
 	private JPanel northPanel = new JPanel(new BorderLayout());
 	private JLabel driveInfo = new JLabel("drive info here");
+	private GuiCreator parent;
+
+	public GuiCreator getMyParent() {
+		return parent;
+	}
 
 	public String getPathLabel() {
 		return pathLabel.getText();
 	}
 
-	public CmdFileWindow() {
+	public CmdFileWindow(GuiCreator parent) {
+		this.parent = parent;
 		this.setLayout(new BorderLayout());
 		fileJTable = new FileJTable(this, new FileTableModel(), initialPath);
 		summarizingDownLabel.setText(fileJTable.getSummarizingDownLabel());

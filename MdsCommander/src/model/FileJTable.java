@@ -32,6 +32,8 @@ public class FileJTable extends JTable {
 	private String currentPath = "test";
 	private Comparators.FileComparators currentSort = FileComparators.NAME_ASC;
 
+	private List<CommanderDataListener> listeners = new ArrayList<CommanderDataListener>();
+
 	public Comparators.FileComparators getCurrentSort() {
 		return currentSort;
 	}
@@ -53,6 +55,8 @@ public class FileJTable extends JTable {
 		this.fileTableModel = fileTableModel;
 		this.cmdFileWindow = cmdFileWindow;
 		this.summarizingDownLabel = createDownLabelText();
+		listeners.add(cmdFileWindow.getMyParent());
+
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setDefaultRenderer(Object.class, new FileTableRenderer());
 		getTableHeader().setReorderingAllowed(false);
@@ -134,7 +138,14 @@ public class FileJTable extends JTable {
 		});
 
 		setRowSelectionAllowed(true);
-		refresh(path);
+		currentPath = path;
+
+		fileTableModel.setData(currentPath);
+		summarizingDownLabel = createDownLabelText();
+		fileTableModel.fireTableDataChanged();
+		if (selected)
+			setSelected();
+
 	}
 
 	private String createDownLabelText() {
@@ -177,7 +188,7 @@ public class FileJTable extends JTable {
 		fileTableModel.fireTableDataChanged();
 		if (selected)
 			setSelected();
-
+		fireCommanderDataChanged();
 	}
 
 	public String getCurrentPath() {
@@ -201,6 +212,11 @@ public class FileJTable extends JTable {
 			}
 		}
 		return selectedFilesList;
+	}
+
+	public void fireCommanderDataChanged() {
+		for (CommanderDataListener listener : listeners)
+			listener.CmdDataChanged();
 	}
 
 	private CmdFileRow getJTableSelectedRow() {
@@ -265,7 +281,7 @@ public class FileJTable extends JTable {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// TODO Auto-generated method stub
+			// fireCommanderDataChanged();
 
 		}
 	};

@@ -39,9 +39,10 @@ import javax.swing.KeyStroke;
 
 import commander.controller.FileManager;
 
+import model.CommanderDataListener;
 import model.FileJTable;
 
-public class GuiCreator {
+public class GuiCreator implements CommanderDataListener {
 
 	private JPanel southPart;
 	private JPanel northPart;
@@ -157,7 +158,7 @@ public class GuiCreator {
 		if (leftSide.isSelected()) {
 			downPath = leftSide.getFileJTable().getCurrentPath();
 		} else {
-			downPath = leftSide.getFileJTable().getCurrentPath();
+			downPath = rightSide.getFileJTable().getCurrentPath();
 		}
 
 		path.setText(downPath);
@@ -167,9 +168,10 @@ public class GuiCreator {
 	public JPanel createSplitPanel() {
 
 		JPanel splitterPanel = new JPanel();
-		leftSide = new CmdFileWindow();
-		rightSide = new CmdFileWindow();
 
+		leftSide = new CmdFileWindow(this);
+		rightSide = new CmdFileWindow(this);
+		leftSide.setSelected();
 		final JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				leftSide, rightSide);
 		splitter.setOneTouchExpandable(true);
@@ -177,8 +179,6 @@ public class GuiCreator {
 
 		splitterPanel.setLayout(new BorderLayout());
 		splitterPanel.add(splitter, BorderLayout.CENTER);
-
-		leftSide.setSelected();
 
 		FileJTable leftJTable = leftSide.getFileJTable();
 		leftJTable.getActionMap().put("tabPressed", tabPressed);
@@ -208,5 +208,11 @@ public class GuiCreator {
 			}
 		}
 	};
+
+	@Override
+	public void CmdDataChanged() {
+		refresh();
+
+	}
 
 }
