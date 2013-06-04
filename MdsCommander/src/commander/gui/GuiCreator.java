@@ -4,7 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -44,7 +47,8 @@ public class GuiCreator {
 	private JPanel northPart;
 	private CmdFileWindow leftSide;
 	private CmdFileWindow rightSide;
-	private String downPath = "miods";
+	private String downPath = "abc";
+	private JLabel path = new JLabel();
 
 	public void setDownPath(String downPath) {
 		this.downPath = downPath;
@@ -63,17 +67,17 @@ public class GuiCreator {
 	}
 
 	private static JPanel createNorthPanel() {
-		final JPanel panel = new JPanel();
-
-		JButton imgBtn = new JButton();
-		// java.net.URL imgURL = getClass().getResource(path);
+		final JPanel panel = new JPanel(new MyLayout(FlowLayout.LEFT));
 		ImageIcon test = new ImageIcon("res/refresh.png");
 
-		imgBtn.setIcon(test);
-		imgBtn.setPreferredSize(new Dimension(16, 16));
-		imgBtn.setBorder(BorderFactory.createEmptyBorder());
-		imgBtn.setContentAreaFilled(false);
-		panel.add(imgBtn);
+		for (int i = 0; i < 20; i++) {
+			JButton imgBtn = new JButton();
+			imgBtn.setIcon(test);
+			imgBtn.setPreferredSize(new Dimension(16, 16));
+			imgBtn.setBorder(BorderFactory.createEmptyBorder());
+			imgBtn.setContentAreaFilled(false);
+			panel.add(imgBtn);
+		}
 
 		return panel;
 	}
@@ -85,15 +89,31 @@ public class GuiCreator {
 		JPanel southPanel = new JPanel(new BorderLayout());
 		JPanel executionPanel = new JPanel();
 
-		JLabel path = new JLabel();
 		path.setText(downPath);
 
-		JTextField textbox = new JTextField(40);
+		JTextField textbox = new JTextField();
+		textbox.setMaximumSize(new Dimension(10, 10));
 
 		path.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		textbox.setAlignmentX(Component.RIGHT_ALIGNMENT);
 
+		executionPanel
+				.setLayout(new BoxLayout(executionPanel, BoxLayout.X_AXIS));
+
+		final GridBagLayout gridbag = new GridBagLayout();
+		final GridBagConstraints cc = new GridBagConstraints();
+		executionPanel.setLayout(gridbag);
+
+		cc.weightx = 1;
+		cc.weighty = 1;
+		cc.fill = GridBagConstraints.BOTH;
+		gridbag.setConstraints(path, cc);
 		executionPanel.add(path);
+
+		cc.weightx = 5;
+		cc.gridwidth = GridBagConstraints.REMAINDER;
+		gridbag.setConstraints(textbox, cc);
+		// textbox.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		executionPanel.add(textbox);
 
 		GridLayout gl = new GridLayout(1, 6);
@@ -129,6 +149,19 @@ public class GuiCreator {
 		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(new JMenu("Help"));
 		return menuBar;
+	}
+
+	public void refresh() {
+		// leftSide.refresh() ->filejtable.refresh +right;
+
+		if (leftSide.isSelected()) {
+			downPath = leftSide.getFileJTable().getCurrentPath();
+		} else {
+			downPath = leftSide.getFileJTable().getCurrentPath();
+		}
+
+		path.setText(downPath);
+
 	}
 
 	public JPanel createSplitPanel() {
