@@ -21,7 +21,14 @@ import javax.swing.JOptionPane;
 public class FileManager {
 
 	public static Boolean makeNewDirectory(String destPath, String name) {
+
 		File f = new File(destPath + "\\" + name);
+		if (!f.exists()) {
+			f.mkdir();
+			System.out.println("nowy folder " + f.getAbsolutePath());
+		} else {
+			System.out.println("folder juz istnieje");
+		}
 
 		return f.mkdir();
 	}
@@ -41,26 +48,22 @@ public class FileManager {
 
 	public static void removeFiles(List<File> fileList) {
 
-		int result = JOptionPane.showConfirmDialog(null,
-				"Are you sure to delete selected file(s)?", "Mds Commander",
-				JOptionPane.YES_NO_OPTION);
-		if (result == JOptionPane.YES_OPTION) {
-
-			for (File f : fileList) {
-				Boolean success = removeFile(f);
-				if (!success) {
-					String fileOrFolder;
-					if (f.isDirectory())
-						fileOrFolder = "directory";
-					else
-						fileOrFolder = "file";
-					JOptionPane.showMessageDialog(null, "You cannot delete "
-							+ fileOrFolder + " " + f.getName(),
-							"MdsCommander error message",
-							JOptionPane.ERROR_MESSAGE);
-				}
+		for (File f : fileList) {
+			Boolean success = removeFile(f);
+			if (!success) {
+				String fileOrFolder;
+				if (f.isDirectory())
+					fileOrFolder = "directory";
+				else
+					fileOrFolder = "file";
+				JOptionPane
+						.showMessageDialog(null, "You cannot delete "
+								+ fileOrFolder + " " + f.getName(),
+								"MdsCommander error message",
+								JOptionPane.ERROR_MESSAGE);
 			}
 		}
+
 	}
 
 	private static Boolean removeFile(File f) {
@@ -98,10 +101,13 @@ public class FileManager {
 		File bfile;
 		try {
 
-			if (src.isDirectory())
+			if (src.isDirectory()) {
+				makeNewDirectory(dest, src.getName());
+
 				for (File f : src.listFiles()) {
-					copyFile(dest, f);
+					copyFile(dest + "\\" + src.getName(), f);
 				}
+			}
 
 			afile = src;
 			String srcPath = src.getAbsolutePath();
@@ -109,23 +115,30 @@ public class FileManager {
 					+ srcPath.substring(srcPath.lastIndexOf('\\'));
 
 			bfile = new File(destName);
+			if (afile.canExecute() && afile.canRead()) {
 
-			System.out.println("kopiuje: " + afile.getAbsolutePath() + " do "
-					+ bfile.getAbsolutePath());
+				System.out.println("kopiuje: " + afile.getAbsolutePath()
+						+ " do " + bfile.getAbsolutePath());
 
-			inStream = new FileInputStream(afile);
-			outStream = new FileOutputStream(bfile);
+				inStream = new FileInputStream(afile);
+				outStream = new FileOutputStream(bfile);
 
-			byte[] buffer = new byte[1024];
+				byte[] buffer = new byte[1024];
 
-			int length;
-			// copy the file content in bytes
-			while ((length = inStream.read(buffer)) > 0) {
-				outStream.write(buffer, 0, length);
+				int length;
+				// copy the file content in bytes
+				while ((length = inStream.read(buffer)) > 0) {
+					outStream.write(buffer, 0, length);
+				}
+				inStream.close();
+				outStream.close();
+				System.out.println("File is copied successful!");
+			} else {
+				JOptionPane
+						.showMessageDialog(null, "Access denied",
+								"MdsCommander error message",
+								JOptionPane.ERROR_MESSAGE);
 			}
-			inStream.close();
-			outStream.close();
-			System.out.println("File is copied successful!");
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -136,6 +149,8 @@ public class FileManager {
 	}
 
 	public static Boolean moveFiles(String destPath, List<File> fileList) {
+		copyFiles(destPath, fileList);
+		removeFiles(fileList);
 		return true;
 	}
 }

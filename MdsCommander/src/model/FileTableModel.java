@@ -110,7 +110,7 @@ public class FileTableModel extends AbstractTableModel {
 				File currFile = fileList[i];
 				CmdFileRow fileRow = new CmdFileRow(currFile);
 
-				if (fileRow.getIsFolder()) {
+				if (fileRow.isFolder()) {
 					foldersCount++;
 				} else {
 					filesSize += fileRow.getBaseFile().length();

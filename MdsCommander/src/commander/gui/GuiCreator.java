@@ -64,6 +64,7 @@ public class GuiCreator implements CommanderDataListener {
 		mainPanel.add(createSouthPanel(), BorderLayout.SOUTH);
 		mainPanel.add(splitterPanel, BorderLayout.CENTER);
 		mainPanel.add(createNorthPanel(), BorderLayout.NORTH);
+		refresh();
 		return mainPanel;
 	}
 
@@ -210,6 +211,7 @@ public class GuiCreator implements CommanderDataListener {
 				rightSide.setSelected();
 				leftSide.setDeselected();
 			}
+			refresh();
 		}
 	};
 

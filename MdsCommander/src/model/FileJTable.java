@@ -59,6 +59,7 @@ public class FileJTable extends JTable {
 		this.summarizingDownLabel = createDownLabelText();
 		listeners.add(cmdFileWindow.getMyParent());
 
+		setShowGrid(false);
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setDefaultRenderer(Object.class, new FileTableRenderer());
 		getTableHeader().setReorderingAllowed(false);
@@ -70,6 +71,7 @@ public class FileJTable extends JTable {
 		getActionMap().put("f7Pressed", makeNewFolderAction);
 		getActionMap().put("delPressed", removeFileAction);
 		getActionMap().put("f5Pressed", copyFileAction);
+		getActionMap().put("f6Pressed", moveFileAction);
 
 		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterPressed");
@@ -93,6 +95,9 @@ public class FileJTable extends JTable {
 
 		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0), "f5Pressed");
+
+		getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0), "f6Pressed");
 
 		getTableHeader().addMouseListener(new MouseAdapter() {
 
@@ -146,7 +151,7 @@ public class FileJTable extends JTable {
 		summarizingDownLabel = createDownLabelText();
 		fileTableModel.fireTableDataChanged();
 		if (selected)
-			setSelected();
+			setSelection(true);
 
 	}
 
@@ -166,16 +171,21 @@ public class FileJTable extends JTable {
 		return result;
 	}
 
-	public void setSelected() {
-		requestFocus();
-		changeSelection(0, 0, false, false);
-		selected = true;
-		// fileTableModel.refreshData();
+	public void setSelection(Boolean selection, int row) {
+		if (selection) {
+			requestFocus();
+			if (row >= this.getRowCount())
+				row = this.getRowCount() - 1;
+			changeSelection(row, 0, false, false);
+			selected = true;
+		} else {
+			clearSelection();
+			selected = false;
+		}
 	}
 
-	public void setDeselected() {
-		clearSelection();
-		selected = false;
+	public void setSelection(Boolean selection) {
+		setSelection(selection, 0);
 	}
 
 	public FileTableModel getFileTableModel() {
@@ -189,7 +199,7 @@ public class FileJTable extends JTable {
 		summarizingDownLabel = createDownLabelText();
 		fileTableModel.fireTableDataChanged();
 		if (selected)
-			setSelected();
+			setSelection(true);
 		fireCommanderDataChanged();
 	}
 
@@ -239,7 +249,9 @@ public class FileJTable extends JTable {
 			CmdFileRow row = getJTableSelectedRow();
 			if (row != null) {
 				String newPath = row.getLocation();
-				if (row.getIsFolder()) {
+				if (row.isFolder()) {
+					if (!row.getBaseFile().canRead())
+						return;
 					refresh(newPath);
 					cmdFileWindow.refreshLabelAndSummary();
 				} else {
@@ -292,14 +304,19 @@ public class FileJTable extends JTable {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			File f = new File(currentPath + "\\" + "miodas");
-			if (!f.exists()) {
-				f.mkdir();
+
+			String s = (String) JOptionPane.showInputDialog(null,
+					"Name for the new directory \n", "New folder",
+					JOptionPane.PLAIN_MESSAGE, null, null, null);
+
+			if (s != "" && s != null) {
+				FileManager.makeNewDirectory(currentPath, s);
 				fileTableModel.refreshData();
-				System.out.println("nowy folder " + f.getAbsolutePath());
-			} else {
-				System.out.println("plik juz istnieje");
+				cmdFileWindow.getOtherFileWindow().getFileJTable().fileTableModel
+						.refreshData();
+				setSelection(true);
 			}
+
 		}
 	};
 
@@ -321,11 +338,22 @@ public class FileJTable extends JTable {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 
-			List<File> fileList = getReallySelectedFiles();
+			int result = JOptionPane.showConfirmDialog(null,
+					"Are you sure to delete selected file(s)?",
+					"Mds Commander", JOptionPane.YES_NO_OPTION);
+			if (result == JOptionPane.YES_OPTION) {
+				int row = getSelectedRow();
+				List<File> fileList = getReallySelectedFiles();
 
-			if (fileList.size() > 0) {
-				FileManager.removeFiles(fileList);
-				fileTableModel.refreshData();
+				if (fileList.size() > 0) {
+					FileManager.removeFiles(fileList);
+					fileTableModel.refreshData();
+
+					fileTableModel.refreshData();
+					cmdFileWindow.getOtherFileWindow().getFileJTable().fileTableModel
+							.refreshData();
+					setSelection(true, row);
+				}
 			}
 		}
 	};
@@ -334,6 +362,7 @@ public class FileJTable extends JTable {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+			int row = getSelectedRow();
 			List<File> fileList = getReallySelectedFiles();
 			// System.out.println("kopiujê" +
 			// fileList.get(0).getAbsolutePath());
@@ -343,6 +372,24 @@ public class FileJTable extends JTable {
 			fileTableModel.refreshData();
 			cmdFileWindow.getOtherFileWindow().getFileJTable().fileTableModel
 					.refreshData();
+			setSelection(true, row);
+		}
+	};
+
+	private AbstractAction moveFileAction = new AbstractAction() {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			int row = getSelectedRow();
+			List<File> fileList = getReallySelectedFiles();
+			String destPath = cmdFileWindow.getOtherFileWindow()
+					.getFileJTable().currentPath;
+			FileManager.moveFiles(destPath, fileList);
+			fileTableModel.refreshData();
+			cmdFileWindow.getOtherFileWindow().getFileJTable().fileTableModel
+					.refreshData();
+			setSelection(true, row);
+
 		}
 	};
 

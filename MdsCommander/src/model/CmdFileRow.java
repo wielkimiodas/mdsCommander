@@ -72,7 +72,7 @@ public class CmdFileRow {
 		return extension;
 	}
 
-	public Boolean getIsFolder() {
+	public Boolean isFolder() {
 		return isFolder;
 	}
 

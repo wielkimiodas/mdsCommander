@@ -90,7 +90,7 @@ public class CmdFileWindow extends JPanel {
 	}
 
 	public void setSelected() {
-		fileJTable.setSelected();
+		fileJTable.setSelection(true);
 	}
 
 	public Boolean isSelected() {
@@ -98,7 +98,7 @@ public class CmdFileWindow extends JPanel {
 	}
 
 	public void setDeselected() {
-		fileJTable.setDeselected();
+		fileJTable.setSelection(false);
 	}
 
 	private void createCombobox() {
@@ -142,8 +142,8 @@ public class CmdFileWindow extends JPanel {
 
 	MouseAdapter mouseAdapter = new MouseAdapter() {
 		public void mouseClicked(MouseEvent e) {
-			fileJTable.setSelected();
-			otherFileWindow.fileJTable.setDeselected();
+			fileJTable.setSelection(true, fileJTable.getSelectedRow());
+			otherFileWindow.fileJTable.setSelection(false);
 		};
 	};
 

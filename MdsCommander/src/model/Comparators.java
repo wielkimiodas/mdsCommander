@@ -15,8 +15,8 @@ public class Comparators {
 			@Override
 			public int compare(CmdFileRow o1, CmdFileRow o2) {
 				int value = 0;
-				Boolean o1Folder = o1.getIsFolder();
-				Boolean o2Folder = o2.getIsFolder();
+				Boolean o1Folder = o1.isFolder();
+				Boolean o2Folder = o2.isFolder();
 
 				if (o1.getName() == "[..]")
 					return -1;
@@ -47,8 +47,8 @@ public class Comparators {
 			@Override
 			public int compare(CmdFileRow o1, CmdFileRow o2) {
 				int value = 0;
-				Boolean o1Folder = o1.getIsFolder();
-				Boolean o2Folder = o2.getIsFolder();
+				Boolean o1Folder = o1.isFolder();
+				Boolean o2Folder = o2.isFolder();
 
 				if (o1.getName() == "[..]")
 					return -1;
@@ -79,8 +79,8 @@ public class Comparators {
 			@Override
 			public int compare(CmdFileRow o1, CmdFileRow o2) {
 				int value = 0;
-				Boolean o1Folder = o1.getIsFolder();
-				Boolean o2Folder = o2.getIsFolder();
+				Boolean o1Folder = o1.isFolder();
+				Boolean o2Folder = o2.isFolder();
 
 				if (o1.getName() == "[..]")
 					return -1;
@@ -111,8 +111,8 @@ public class Comparators {
 			@Override
 			public int compare(CmdFileRow o1, CmdFileRow o2) {
 				int value = 0;
-				Boolean o1Folder = o1.getIsFolder();
-				Boolean o2Folder = o2.getIsFolder();
+				Boolean o1Folder = o1.isFolder();
+				Boolean o2Folder = o2.isFolder();
 
 				if (o1.getName() == "[..]")
 					return -1;
@@ -143,8 +143,8 @@ public class Comparators {
 			@Override
 			public int compare(CmdFileRow o1, CmdFileRow o2) {
 				int value = 0;
-				Boolean o1Folder = o1.getIsFolder();
-				Boolean o2Folder = o2.getIsFolder();
+				Boolean o1Folder = o1.isFolder();
+				Boolean o2Folder = o2.isFolder();
 
 				if (o1.getName() == "[..]")
 					return -1;
@@ -175,8 +175,8 @@ public class Comparators {
 			@Override
 			public int compare(CmdFileRow o1, CmdFileRow o2) {
 				int value = 0;
-				Boolean o1Folder = o1.getIsFolder();
-				Boolean o2Folder = o2.getIsFolder();
+				Boolean o1Folder = o1.isFolder();
+				Boolean o2Folder = o2.isFolder();
 
 				if (o1.getName() == "[..]")
 					return -1;
@@ -207,8 +207,8 @@ public class Comparators {
 			@Override
 			public int compare(CmdFileRow o1, CmdFileRow o2) {
 				int value = 0;
-				Boolean o1Folder = o1.getIsFolder();
-				Boolean o2Folder = o2.getIsFolder();
+				Boolean o1Folder = o1.isFolder();
+				Boolean o2Folder = o2.isFolder();
 
 				if (o1.getName() == "[..]")
 					return -1;
@@ -239,8 +239,8 @@ public class Comparators {
 			@Override
 			public int compare(CmdFileRow o1, CmdFileRow o2) {
 				int value = 0;
-				Boolean o1Folder = o1.getIsFolder();
-				Boolean o2Folder = o2.getIsFolder();
+				Boolean o1Folder = o1.isFolder();
+				Boolean o2Folder = o2.isFolder();
 
 				if (o1.getName() == "[..]")
 					return -1;
