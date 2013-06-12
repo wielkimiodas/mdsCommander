@@ -13,7 +13,7 @@ import javax.swing.table.AbstractTableModel;
 @SuppressWarnings("serial")
 public class FileTableModel extends AbstractTableModel {
 
-	String columnNames[] = { "Name", "Ext", "Size", "Date" };
+	String columnNames[] = { "Nazwa", "Rozsz", "Rozmiar", "Data" };
 	private String currentPath;
 
 	List<CmdFileRow> data = new ArrayList<CmdFileRow>();

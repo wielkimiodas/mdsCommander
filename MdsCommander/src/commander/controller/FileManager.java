@@ -31,7 +31,7 @@ public class FileManager {
 
 	JDialog dialog;
 	private SwingWorker<Object, String> copyWorker;
-	public SwingWorker<Object, String> moveWorker;
+	private SwingWorker<Object, String> moveWorker;
 	boolean res = true;
 
 	public FileManager() {
@@ -44,7 +44,7 @@ public class FileManager {
 		public void actionPerformed(ActionEvent arg0) {
 			// if (!copyWorker.isCancelled())
 			boolean res = copyWorker.cancel(true);
-			System.out.println("anulacja: " + res);
+			// System.out.println("anulacja: " + res);
 		}
 	};
 
@@ -67,7 +67,7 @@ public class FileManager {
 		pr.setIndeterminate(true);
 		dialog.add(pr);
 		dialog.setVisible(true);
-		JButton cancelAction = new JButton("Cancel");
+		JButton cancelAction = new JButton("Anuluj");
 		cancelAction.addActionListener(cancelListener);
 		dialog.add(cancelAction);
 		dialog.pack();
@@ -78,7 +78,6 @@ public class FileManager {
 			@Override
 			protected Boolean doInBackground() throws Exception {
 				try {
-					boolean udalosie;
 					for (File file : fileList) {
 						copyFile(destination, file);
 						dialog.dispose();
@@ -108,13 +107,13 @@ public class FileManager {
 			if (!success) {
 				String fileOrFolder;
 				if (f.isDirectory())
-					fileOrFolder = "directory";
+					fileOrFolder = "folderu";
 				else
-					fileOrFolder = "file";
+					fileOrFolder = "pliku";
 				JOptionPane
-						.showMessageDialog(null, "You cannot delete "
+						.showMessageDialog(null, "Nie mo¿na usun¹æ "
 								+ fileOrFolder + " " + f.getName(),
-								"MdsCommander error message",
+								"B³¹d programu MdsCommander",
 								JOptionPane.ERROR_MESSAGE);
 			}
 		}
@@ -131,14 +130,12 @@ public class FileManager {
 						directoryEmpty = false;
 						String fileOrFolder;
 						if (c.isDirectory())
-							fileOrFolder = "directory";
+							fileOrFolder = "floderu";
 						else
-							fileOrFolder = "file";
-						JOptionPane.showMessageDialog(
-								null,
-								"You cannot delete " + fileOrFolder + " "
-										+ c.getName(),
-								"MdsCommander error message",
+							fileOrFolder = "pliku";
+						JOptionPane.showMessageDialog(null, "Nie mo¿na usun¹æ "
+								+ fileOrFolder + " " + c.getName(),
+								"B³¹d programu MdsCommander",
 								JOptionPane.ERROR_MESSAGE);
 					}
 				}
@@ -172,17 +169,15 @@ public class FileManager {
 			bfile = new File(destName);
 			int res = -2;
 			if (bfile.exists()) {
-				res = JOptionPane.showConfirmDialog(null, "Overwrite file "
-						+ bfile.getName() + "?", "MdsCommander error message",
+				res = JOptionPane.showConfirmDialog(null, "Czy nadpisaæ plik "
+						+ bfile.getName() + "?",
+						"Potwierdzenie programu MdsCommander",
 						JOptionPane.YES_NO_OPTION);
 			}
 
 			if (!bfile.exists() || res == JOptionPane.YES_OPTION) {
 
 				if (afile.canExecute() && afile.canRead()) {
-
-					System.out.println("kopiuje: " + afile.getAbsolutePath()
-							+ " do " + bfile.getAbsolutePath());
 
 					inStream = new FileInputStream(afile);
 					outStream = new FileOutputStream(bfile);
@@ -204,8 +199,8 @@ public class FileManager {
 					outStream.close();
 					System.out.println("File is copied successful!");
 				} else {
-					JOptionPane.showMessageDialog(null, "Access denied",
-							"MdsCommander error message",
+					JOptionPane.showMessageDialog(null, "Dostêp zabroniony",
+							"B³¹d programu MdsCommander",
 							JOptionPane.ERROR_MESSAGE);
 				}
 			} else {
@@ -225,7 +220,7 @@ public class FileManager {
 		pr.setIndeterminate(true);
 		dialog.add(pr);
 		dialog.setVisible(true);
-		JButton cancelAction = new JButton("Cancel");
+		JButton cancelAction = new JButton("Anuluj");
 		cancelAction.addActionListener(cancelListener);
 		dialog.add(cancelAction);
 		dialog.pack();
@@ -245,13 +240,13 @@ public class FileManager {
 						if (!success) {
 							String fileOrFolder;
 							if (file.isDirectory())
-								fileOrFolder = "directory";
+								fileOrFolder = "folderu";
 							else
-								fileOrFolder = "file";
+								fileOrFolder = "pliku";
 							JOptionPane.showMessageDialog(null,
-									"You cannot delete " + fileOrFolder + " "
+									"Nie mo¿na usun¹æ " + fileOrFolder + " "
 											+ file.getName(),
-									"MdsCommander error message",
+									"B³¹d programu MdsCommander",
 									JOptionPane.ERROR_MESSAGE);
 						}
 						dialog.dispose();

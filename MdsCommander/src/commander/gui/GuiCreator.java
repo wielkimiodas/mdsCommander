@@ -115,7 +115,6 @@ public class GuiCreator implements CommanderDataListener {
 		cc.weightx = 5;
 		cc.gridwidth = GridBagConstraints.REMAINDER;
 		gridbag.setConstraints(textbox, cc);
-		// textbox.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		executionPanel.add(textbox);
 
 		GridLayout gl = new GridLayout(1, 6);
@@ -136,8 +135,8 @@ public class GuiCreator implements CommanderDataListener {
 	}
 
 	public static JMenuBar createMainMenuBar() {
-		final JMenu fileMenu = new JMenu("File");
-		final JMenuItem closeItem = new JMenuItem("Close");
+		final JMenu fileMenu = new JMenu("Plik");
+		final JMenuItem closeItem = new JMenuItem("Zamknij");
 		closeItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
@@ -147,9 +146,9 @@ public class GuiCreator implements CommanderDataListener {
 
 		final JMenuBar menuBar = new JMenuBar();
 		menuBar.add(fileMenu);
-		menuBar.add(new JMenu("Edit"));
+		menuBar.add(new JMenu("Edycja"));
 		menuBar.add(Box.createHorizontalGlue());
-		menuBar.add(new JMenu("Help"));
+		menuBar.add(new JMenu("Pomoc"));
 		return menuBar;
 	}
 

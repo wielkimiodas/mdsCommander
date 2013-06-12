@@ -237,7 +237,7 @@ public class FileJTable extends JTable {
 
 		selectedRow = getSelectedRow();
 		if (selectedRow == -1) {
-			System.out.println("No file selected");
+			System.out.println("Nie wybrano pliku");
 			return null;
 		}
 		return fileTableModel.getRowAt(selectedRow);
@@ -261,8 +261,8 @@ public class FileJTable extends JTable {
 						d.open(new File(row.getLocation()));
 					} catch (IOException e) {
 						JOptionPane.showMessageDialog(null,
-								"You cannot access this file",
-								"MdsCommander error message",
+								"Brak dostêpu do pliku",
+								"B³¹d programu MdsCommander",
 								JOptionPane.ERROR_MESSAGE);
 
 					}
@@ -307,7 +307,7 @@ public class FileJTable extends JTable {
 		public void actionPerformed(ActionEvent arg0) {
 
 			String s = (String) JOptionPane.showInputDialog(null,
-					"Name for the new directory \n", "New folder",
+					"Nazwa nowego folderu: \n", "Nowy folder",
 					JOptionPane.PLAIN_MESSAGE, null, null, null);
 
 			if (s != "" && s != null) {
@@ -340,8 +340,9 @@ public class FileJTable extends JTable {
 		public void actionPerformed(ActionEvent arg0) {
 
 			int result = JOptionPane.showConfirmDialog(null,
-					"Are you sure to delete selected file(s)?",
-					"Mds Commander", JOptionPane.YES_NO_OPTION);
+					"Czy na pewno chcesz usun¹æ zaznaczony(e) plik(i)?",
+					"Potwierdzenie programu MdsCommander",
+					JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
 				int row = getSelectedRow();
 				List<File> fileList = getReallySelectedFiles();
