@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.sound.sampled.BooleanControl;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
 public class FileManager {
 
@@ -33,17 +34,27 @@ public class FileManager {
 		return f.mkdir();
 	}
 
-	public static Boolean copyFiles(String destination, List<File> fileList) {
+	public static Boolean copyFiles(final String destination,
+			final List<File> fileList) {
 
-		try {
-			for (File file : fileList) {
-				copyFile(destination, file);
+		new SwingWorker<Object, String>() {
+
+			@Override
+			protected Object doInBackground() throws Exception {
+				try {
+					for (File file : fileList) {
+						copyFile(destination, file);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					return false;
+				}
+				return null;
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+
+		}.execute();
 		return true;
+
 	}
 
 	public static void removeFiles(List<File> fileList) {
