@@ -1,5 +1,9 @@
 package commander.controller;
 
+import java.awt.Dialog;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,13 +20,33 @@ import java.util.EnumSet;
 import java.util.List;
 
 import javax.sound.sampled.BooleanControl;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
 public class FileManager {
 
-	public static Boolean makeNewDirectory(String destPath, String name) {
+	JDialog dialog;
+	private SwingWorker<Object, String> copyWorker;
+	private SwingWorker<Object, String> removeWorker;
 
+	public FileManager() {
+		dialog = new JDialog(MainCommander.frame);
+	}
+
+	ActionListener cancelListener = new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			// if (!copyWorker.isCancelled())
+			boolean res = copyWorker.cancel(true);
+			System.out.println("anulacja: " + res);
+		}
+	};
+
+	public static Boolean makeNewDirectory(String destPath, String name) {
 		File f = new File(destPath + "\\" + name);
 		if (!f.exists()) {
 			f.mkdir();
@@ -34,16 +58,27 @@ public class FileManager {
 		return f.mkdir();
 	}
 
-	public static Boolean copyFiles(final String destination,
-			final List<File> fileList) {
+	public Boolean copyFiles(final String destination, final List<File> fileList) {
 
-		new SwingWorker<Object, String>() {
+		dialog.setLayout(new GridLayout(2, 2));
+		JProgressBar pr = new JProgressBar();
+		pr.setIndeterminate(true);
+		dialog.add(pr);
+		dialog.setVisible(true);
+		JButton cancelAction = new JButton("Cancel");
+		cancelAction.addActionListener(cancelListener);
+		dialog.add(cancelAction);
+		dialog.pack();
+
+		copyWorker = new SwingWorker<Object, String>() {
 
 			@Override
 			protected Object doInBackground() throws Exception {
+
 				try {
 					for (File file : fileList) {
 						copyFile(destination, file);
+						dialog.dispose();
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -52,12 +87,13 @@ public class FileManager {
 				return null;
 			}
 
-		}.execute();
+		};
+		copyWorker.execute();
 		return true;
 
 	}
 
-	public static void removeFiles(List<File> fileList) {
+	public void removeFiles(List<File> fileList) {
 
 		for (File f : fileList) {
 			Boolean success = removeFile(f);
@@ -77,7 +113,7 @@ public class FileManager {
 
 	}
 
-	private static Boolean removeFile(File f) {
+	private Boolean removeFile(File f) {
 		if (f.exists() && f.canWrite()) {
 			if (f.isDirectory()) {
 				Boolean directoryEmpty = true;
@@ -105,7 +141,7 @@ public class FileManager {
 	}
 
 	@SuppressWarnings("unused")
-	private static Boolean copyFile(String dest, File src) {
+	private Boolean copyFile(String dest, File src) {
 		InputStream inStream = null;
 		OutputStream outStream = null;
 		File afile;
@@ -140,6 +176,12 @@ public class FileManager {
 				// copy the file content in bytes
 				while ((length = inStream.read(buffer)) > 0) {
 					outStream.write(buffer, 0, length);
+					if (Thread.currentThread().isInterrupted()) {
+						inStream.close();
+						outStream.close();
+						return false;
+					}
+
 				}
 				inStream.close();
 				outStream.close();
@@ -159,7 +201,7 @@ public class FileManager {
 		return true;
 	}
 
-	public static Boolean moveFiles(String destPath, List<File> fileList) {
+	public Boolean moveFiles(String destPath, List<File> fileList) {
 		copyFiles(destPath, fileList);
 		removeFiles(fileList);
 		return true;

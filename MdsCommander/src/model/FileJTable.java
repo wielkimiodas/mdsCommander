@@ -346,7 +346,8 @@ public class FileJTable extends JTable {
 				List<File> fileList = getReallySelectedFiles();
 
 				if (fileList.size() > 0) {
-					FileManager.removeFiles(fileList);
+					FileManager fm = new FileManager();
+					fm.removeFiles(fileList);
 					fileTableModel.refreshData();
 
 					fileTableModel.refreshData();
@@ -368,7 +369,8 @@ public class FileJTable extends JTable {
 			// fileList.get(0).getAbsolutePath());
 			String destPath = cmdFileWindow.getOtherFileWindow()
 					.getFileJTable().currentPath;
-			FileManager.copyFiles(destPath, fileList);
+			FileManager fm = new FileManager();
+			fm.copyFiles(destPath, fileList);
 			fileTableModel.refreshData();
 			cmdFileWindow.getOtherFileWindow().getFileJTable().fileTableModel
 					.refreshData();
@@ -384,7 +386,8 @@ public class FileJTable extends JTable {
 			List<File> fileList = getReallySelectedFiles();
 			String destPath = cmdFileWindow.getOtherFileWindow()
 					.getFileJTable().currentPath;
-			FileManager.moveFiles(destPath, fileList);
+			FileManager fm = new FileManager();
+			fm.moveFiles(destPath, fileList);
 			fileTableModel.refreshData();
 			cmdFileWindow.getOtherFileWindow().getFileJTable().fileTableModel
 					.refreshData();

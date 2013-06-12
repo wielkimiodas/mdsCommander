@@ -10,8 +10,9 @@ public class MainCommander {
 	 * @param args
 	 */
 
+	public static final JFrame frame = new JFrame("Mds Commander");
+
 	public static void main(String[] args) {
-		final JFrame frame = new JFrame("Mds Commander");
 		GuiCreator gc = new GuiCreator();
 		frame.getContentPane().add(gc.createMainPanel());
 		frame.setJMenuBar(GuiCreator.createMainMenuBar());
@@ -19,5 +20,4 @@ public class MainCommander {
 		frame.pack();
 		frame.setVisible(true);
 	}
-
 }

@@ -142,7 +142,11 @@ public class CmdFileWindow extends JPanel {
 
 	MouseAdapter mouseAdapter = new MouseAdapter() {
 		public void mouseClicked(MouseEvent e) {
-			fileJTable.setSelection(true, fileJTable.getSelectedRow());
+			int row = fileJTable.getSelectedRow();
+			fileJTable.getFileTableModel().refreshData();
+			getOtherFileWindow().getFileJTable().getFileTableModel()
+					.refreshData();
+			fileJTable.setSelection(true, row);
 			otherFileWindow.fileJTable.setSelection(false);
 		};
 	};

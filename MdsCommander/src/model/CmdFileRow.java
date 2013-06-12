@@ -76,8 +76,6 @@ public class CmdFileRow {
 		return isFolder;
 	}
 
-	
-
 	private void setFileSize(File file) {
 		if (this.isFolder) {
 			this.fileSize = "<DIR>";
