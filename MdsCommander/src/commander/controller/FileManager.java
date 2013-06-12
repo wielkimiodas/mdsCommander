@@ -35,7 +35,9 @@ public class FileManager {
 	private SwingWorker<Object, String> copyWorker;
 	private SwingWorker<Object, String> moveWorker;
 	boolean res = true;
+	boolean cant = false;
 	FileJTable fjt;
+	boolean copying=true;
 
 	public FileManager(FileJTable fjt) {
 		this.fjt = fjt;
@@ -45,12 +47,22 @@ public class FileManager {
 	ActionListener cancelListener = new ActionListener() {
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			// if (!copyWorker.isCancelled())
-			boolean res = copyWorker.cancel(true);
-			// System.out.println("anulacja: " + res);
+		public void actionPerformed(ActionEvent arg0) {	
+				copyWorker.cancel(true);
+			
 		}
 	};
+	boolean mooove= true;
+	ActionListener moveCancelListener = new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {	
+				moveWorker.cancel(true);
+				mooove= false;
+			
+		}
+	};
+	
 
 	public static Boolean makeNewDirectory(String destPath, String name) {
 		File f = new File(destPath + "\\" + name);
@@ -65,7 +77,6 @@ public class FileManager {
 	}
 
 	public Boolean copyFiles(final String destination, final List<File> fileList) {
-
 		dialog.setLayout(new GridLayout(2, 2));
 		JProgressBar pr = new JProgressBar();
 		pr.setIndeterminate(true);
@@ -219,14 +230,14 @@ public class FileManager {
 	}
 
 	public Boolean moveFiles(final String destPath, final List<File> fileList) {
-
+		mooove = true;
 		dialog.setLayout(new GridLayout(2, 2));
 		JProgressBar pr = new JProgressBar();
 		pr.setIndeterminate(true);
 		dialog.add(pr);
 		dialog.setVisible(true);
 		JButton cancelAction = new JButton("Anuluj");
-		cancelAction.addActionListener(cancelListener);
+		cancelAction.addActionListener(moveCancelListener);
 		dialog.add(cancelAction);
 		dialog.setLocationRelativeTo(MainCommander.frame);
 		dialog.pack();
@@ -240,7 +251,7 @@ public class FileManager {
 					for (File file : fileList) {
 						copyFile(destPath, file);
 					}
-
+					//if(mooove)
 					for (File file : fileList) {
 						Boolean success = removeFile(file);
 						if (!success) {
@@ -260,7 +271,7 @@ public class FileManager {
 				} catch (Exception e) {
 					e.printStackTrace();
 					return false;
-				}
+				}				
 				return null;
 			}
 
