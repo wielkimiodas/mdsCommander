@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.sound.sampled.BooleanControl;
 import javax.swing.JButton;
@@ -30,7 +31,8 @@ public class FileManager {
 
 	JDialog dialog;
 	private SwingWorker<Object, String> copyWorker;
-	private SwingWorker<Object, String> removeWorker;
+	public SwingWorker<Object, String> moveWorker;
+	boolean res = true;
 
 	public FileManager() {
 		dialog = new JDialog(MainCommander.frame);
@@ -69,13 +71,14 @@ public class FileManager {
 		cancelAction.addActionListener(cancelListener);
 		dialog.add(cancelAction);
 		dialog.pack();
-
 		copyWorker = new SwingWorker<Object, String>() {
 
-			@Override
-			protected Object doInBackground() throws Exception {
+			Boolean temp = true;
 
+			@Override
+			protected Boolean doInBackground() throws Exception {
 				try {
+					boolean udalosie;
 					for (File file : fileList) {
 						copyFile(destination, file);
 						dialog.dispose();
@@ -87,10 +90,15 @@ public class FileManager {
 				return null;
 			}
 
+			@Override
+			protected void done() {
+				res = temp;
+			}
 		};
-		copyWorker.execute();
-		return true;
 
+		copyWorker.execute();
+
+		return res;
 	}
 
 	public void removeFiles(List<File> fileList) {
@@ -162,48 +170,107 @@ public class FileManager {
 					+ srcPath.substring(srcPath.lastIndexOf('\\'));
 
 			bfile = new File(destName);
-			if (afile.canExecute() && afile.canRead()) {
-
-				System.out.println("kopiuje: " + afile.getAbsolutePath()
-						+ " do " + bfile.getAbsolutePath());
-
-				inStream = new FileInputStream(afile);
-				outStream = new FileOutputStream(bfile);
-
-				byte[] buffer = new byte[1024];
-
-				int length;
-				// copy the file content in bytes
-				while ((length = inStream.read(buffer)) > 0) {
-					outStream.write(buffer, 0, length);
-					if (Thread.currentThread().isInterrupted()) {
-						inStream.close();
-						outStream.close();
-						return false;
-					}
-
-				}
-				inStream.close();
-				outStream.close();
-				System.out.println("File is copied successful!");
-			} else {
-				JOptionPane
-						.showMessageDialog(null, "Access denied",
-								"MdsCommander error message",
-								JOptionPane.ERROR_MESSAGE);
+			int res = -2;
+			if (bfile.exists()) {
+				res = JOptionPane.showConfirmDialog(null, "Overwrite file "
+						+ bfile.getName() + "?", "MdsCommander error message",
+						JOptionPane.YES_NO_OPTION);
 			}
 
+			if (!bfile.exists() || res == JOptionPane.YES_OPTION) {
+
+				if (afile.canExecute() && afile.canRead()) {
+
+					System.out.println("kopiuje: " + afile.getAbsolutePath()
+							+ " do " + bfile.getAbsolutePath());
+
+					inStream = new FileInputStream(afile);
+					outStream = new FileOutputStream(bfile);
+
+					byte[] buffer = new byte[1024];
+
+					int length;
+					// copy the file content in bytes
+					while ((length = inStream.read(buffer)) > 0) {
+						outStream.write(buffer, 0, length);
+						if (Thread.currentThread().isInterrupted()) {
+							inStream.close();
+							outStream.close();
+							return false;
+						}
+
+					}
+					inStream.close();
+					outStream.close();
+					System.out.println("File is copied successful!");
+				} else {
+					JOptionPane.showMessageDialog(null, "Access denied",
+							"MdsCommander error message",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			} else {
+				return false;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
-
 		return true;
 	}
 
-	public Boolean moveFiles(String destPath, List<File> fileList) {
-		copyFiles(destPath, fileList);
-		removeFiles(fileList);
+	public Boolean moveFiles(final String destPath, final List<File> fileList) {
+
+		dialog.setLayout(new GridLayout(2, 2));
+		JProgressBar pr = new JProgressBar();
+		pr.setIndeterminate(true);
+		dialog.add(pr);
+		dialog.setVisible(true);
+		JButton cancelAction = new JButton("Cancel");
+		cancelAction.addActionListener(cancelListener);
+		dialog.add(cancelAction);
+		dialog.pack();
+		moveWorker = new SwingWorker<Object, String>() {
+
+			Boolean temp = true;
+
+			@Override
+			protected Boolean doInBackground() throws Exception {
+				try {
+					for (File file : fileList) {
+						copyFile(destPath, file);
+					}
+
+					for (File file : fileList) {
+						Boolean success = removeFile(file);
+						if (!success) {
+							String fileOrFolder;
+							if (file.isDirectory())
+								fileOrFolder = "directory";
+							else
+								fileOrFolder = "file";
+							JOptionPane.showMessageDialog(null,
+									"You cannot delete " + fileOrFolder + " "
+											+ file.getName(),
+									"MdsCommander error message",
+									JOptionPane.ERROR_MESSAGE);
+						}
+						dialog.dispose();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					return false;
+				}
+				return null;
+			}
+
+			@Override
+			protected void done() {
+				res = temp;
+			}
+		};
+
+		moveWorker.execute();
+		System.out.println("moved succs");
 		return true;
 	}
 }

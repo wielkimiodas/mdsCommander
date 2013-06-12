@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.print.attribute.standard.MediaSize.Other;
 import javax.swing.AbstractAction;
@@ -371,9 +372,11 @@ public class FileJTable extends JTable {
 					.getFileJTable().currentPath;
 			FileManager fm = new FileManager();
 			fm.copyFiles(destPath, fileList);
+
 			fileTableModel.refreshData();
 			cmdFileWindow.getOtherFileWindow().getFileJTable().fileTableModel
 					.refreshData();
+			System.out.println("refr succs");
 			setSelection(true, row);
 		}
 	};
@@ -388,6 +391,16 @@ public class FileJTable extends JTable {
 					.getFileJTable().currentPath;
 			FileManager fm = new FileManager();
 			fm.moveFiles(destPath, fileList);
+
+			try {
+				Thread.currentThread().sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			System.out.println("0,5 sec");
+
 			fileTableModel.refreshData();
 			cmdFileWindow.getOtherFileWindow().getFileJTable().fileTableModel
 					.refreshData();
