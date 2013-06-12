@@ -27,14 +27,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
+import model.FileJTable;
+
 public class FileManager {
 
 	JDialog dialog;
 	private SwingWorker<Object, String> copyWorker;
 	private SwingWorker<Object, String> moveWorker;
 	boolean res = true;
+	FileJTable fjt;
 
-	public FileManager() {
+	public FileManager(FileJTable fjt) {
+		this.fjt = fjt;
 		dialog = new JDialog(MainCommander.frame);
 	}
 
@@ -70,6 +74,7 @@ public class FileManager {
 		JButton cancelAction = new JButton("Anuluj");
 		cancelAction.addActionListener(cancelListener);
 		dialog.add(cancelAction);
+		dialog.setLocationRelativeTo(MainCommander.frame);
 		dialog.pack();
 		copyWorker = new SwingWorker<Object, String>() {
 
@@ -91,7 +96,7 @@ public class FileManager {
 
 			@Override
 			protected void done() {
-				res = temp;
+				fjt.tempRefresh();
 			}
 		};
 
@@ -168,7 +173,7 @@ public class FileManager {
 
 			bfile = new File(destName);
 			int res = -2;
-			if (bfile.exists()) {
+			if (bfile.exists() && !bfile.isDirectory()) {
 				res = JOptionPane.showConfirmDialog(null, "Czy nadpisaæ plik "
 						+ bfile.getName() + "?",
 						"Potwierdzenie programu MdsCommander",
@@ -223,6 +228,7 @@ public class FileManager {
 		JButton cancelAction = new JButton("Anuluj");
 		cancelAction.addActionListener(cancelListener);
 		dialog.add(cancelAction);
+		dialog.setLocationRelativeTo(MainCommander.frame);
 		dialog.pack();
 		moveWorker = new SwingWorker<Object, String>() {
 
@@ -260,7 +266,7 @@ public class FileManager {
 
 			@Override
 			protected void done() {
-				res = temp;
+				fjt.tempRefresh();
 			}
 		};
 

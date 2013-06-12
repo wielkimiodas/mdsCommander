@@ -348,7 +348,8 @@ public class FileJTable extends JTable {
 				List<File> fileList = getReallySelectedFiles();
 
 				if (fileList.size() > 0) {
-					FileManager fm = new FileManager();
+					FileManager fm = new FileManager(
+							cmdFileWindow.getFileJTable());
 					fm.removeFiles(fileList);
 					fileTableModel.refreshData();
 
@@ -371,7 +372,7 @@ public class FileJTable extends JTable {
 			// fileList.get(0).getAbsolutePath());
 			String destPath = cmdFileWindow.getOtherFileWindow()
 					.getFileJTable().currentPath;
-			FileManager fm = new FileManager();
+			FileManager fm = new FileManager(cmdFileWindow.getFileJTable());
 			fm.copyFiles(destPath, fileList);
 
 			fileTableModel.refreshData();
@@ -390,15 +391,15 @@ public class FileJTable extends JTable {
 			List<File> fileList = getReallySelectedFiles();
 			String destPath = cmdFileWindow.getOtherFileWindow()
 					.getFileJTable().currentPath;
-			FileManager fm = new FileManager();
+			FileManager fm = new FileManager(cmdFileWindow.getFileJTable());
 			fm.moveFiles(destPath, fileList);
 
-			try {
-				Thread.currentThread().sleep(200);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			// try {
+			// Thread.currentThread().sleep(200);
+			// } catch (InterruptedException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
 
 			System.out.println("0,5 sec");
 
@@ -409,5 +410,13 @@ public class FileJTable extends JTable {
 
 		}
 	};
+
+	public void tempRefresh() {
+
+		fileTableModel.refreshData();
+		cmdFileWindow.getOtherFileWindow().getFileJTable().fileTableModel
+				.refreshData();
+		setSelection(true);
+	}
 
 }
